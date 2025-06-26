@@ -79,5 +79,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd genero
+            cd project
             docker compose up --build -d
