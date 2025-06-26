@@ -77,7 +77,7 @@ jobs:
           username: ${{ secrets.SSH_USER }} 
           password: ${{ secrets.SSH_PASSWORD }}
           source: "docker/**"
-          target: project/backend
+          target: project/docker
           strip_components: 1
           rm: false
       
