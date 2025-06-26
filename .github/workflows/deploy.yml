@@ -76,9 +76,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }} 
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "docker/*"
-          target: project/docker
-          strip_components: 2
+          source: "docker/**"
+          target: project/backend
+          strip_components: 1
           rm: false
       
       - name: Upload backend directory
