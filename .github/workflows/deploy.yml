@@ -47,7 +47,38 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           source: "nginx.conf"
-          target: project/frontend
+          target: project
+          rm: false
+
+      - name: Upload README.md
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "README.md"
+          target: project
+          rm: false
+
+      - name: Upload docker-compose.yml
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker-compose.yml"
+          target: project
+          rm: false
+      
+      - name: Upload docker directory
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }} 
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker/*"
+          target: project/docker
+          strip_components: 2
           rm: false
       
       - name: Upload backend directory
@@ -79,5 +110,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd project
+            cd project/frontend
             docker compose up --build -d
