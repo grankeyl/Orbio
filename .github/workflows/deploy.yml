@@ -87,8 +87,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }} 
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "backend/*"
+          source: "backend/**"
           target: project/backend
+          strip_components: 1
           rm: false
       
       - name: Upload dist directory
