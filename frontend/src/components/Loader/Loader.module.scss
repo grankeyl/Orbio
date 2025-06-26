@@ -1,0 +1,32 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.Loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba($color-background, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.Spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid $color-surface;
+  border-top: 6px solid $color-primary;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}

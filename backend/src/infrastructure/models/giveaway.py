@@ -1,0 +1,34 @@
+from datetime import datetime
+
+from sqlalchemy import TIMESTAMP, Boolean, Float, ForeignKey, Integer
+from sqlalchemy.dialects.postgresql import ENUM, JSONB
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from src.application.common.const import GiveawayType
+from src.infrastructure.models.base import Base
+from src.infrastructure.models.user import User
+
+
+class Giveaway(Base):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    type: Mapped[GiveawayType] = mapped_column(ENUM(GiveawayType))
+    price: Mapped[float] = mapped_column(Float)
+    gifts_ids: Mapped[list[int]] = mapped_column(JSONB)
+    participants_ids: Mapped[list[int]] = mapped_column(JSONB)
+    winners_ids: Mapped[list[int]] = mapped_column(JSONB)
+    referrers_ids: Mapped[list[int]] = mapped_column(JSONB)
+    channels_usernames: Mapped[list[str]] = mapped_column(JSONB)
+    quantity_members: Mapped[int] = mapped_column(Integer)
+    is_premium: Mapped[bool] = mapped_column(Boolean)
+    end_time: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True))
+    is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
+    message_ids: Mapped[list[int]] = mapped_column(JSONB, nullable=True)
+
+    user: Mapped[User] = relationship("User", lazy="selectin")
+
+class Ticket(Base):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    count: Mapped[float] = mapped_column(Integer)
+    giveaway_id: Mapped[int] = mapped_column(ForeignKey("giveaways.id", ondelete="CASCADE"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))

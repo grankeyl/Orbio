@@ -1,0 +1,140 @@
+@use './_variables' as *;
+@use './_mixins' as *;
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: $color-text;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+body {
+  margin: 0;
+  font-family: 'SF Pro Text', sans-serif;
+  background: $color-background;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  user-select: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input {
+  outline: none;
+}
+
+img {
+  animation: fade 0.4s ease-out;
+}
+
+button {
+  cursor: pointer;
+}
+
+@keyframes page-in {
+    0% {
+        opacity: 0;
+        filter: blur(3px);
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.00);
+    }
+}
+
+main {
+  animation: page-in 0.33s ease-in-out;
+}
+
+.toastContainer {
+  margin-top: 52px;
+}
+// Toastify__toast-container Toastify__toast-container--top-right 
+.toast {
+  @include subtittle; 
+  -webkit-tap-highlight-color: transparent;
+  color: #000;
+  border-radius: 42px;
+  border: 1px solid rgb(#3b3e43, 0.6);
+  backdrop-filter: blur(90px);
+  background-size: 120%;
+  margin-bottom: unset;
+  min-height: unset;
+  margin-top: 10px;
+  padding: 16px;
+  padding-right: 60px;
+
+  &Success {
+    border: 1px solid $color-border;
+    color: $color-green;
+    background-color: rgba($color-surface, 0.6);
+    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px);
+  }
+  &Error {
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    background-color: rgba(#ff0000, 0.1);
+  }
+  &Warning {
+    background-color: #fff;
+  }
+  &Info {
+    border: 1px solid #8380ff;
+    color: #8380ff;
+    background-color: rgba(#ffffff51, 0.1);
+  }
+  &Body {
+    padding: 0;
+  }
+  &Container {
+    z-index: 100000;
+  }
+  &Close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    width: 33px;
+    height: 33px;
+
+    picture {
+      display: flex;
+      width: 33px;
+      height: 33px;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

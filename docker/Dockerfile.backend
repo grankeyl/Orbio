@@ -1,0 +1,24 @@
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y curl build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+ENV POETRY_VERSION=2.1.1
+RUN curl -sSL https://install.python-poetry.org | python3 - --version $POETRY_VERSION && \
+    ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+RUN apt update && apt install -y git
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+
+COPY backend/pyproject.toml ./pyproject.toml
+
+RUN poetry install --no-root --no-interaction --no-ansi
+
+RUN poetry add tomlkit
+
+COPY backend/ ./
+
+RUN chmod +x ./entrypoint.sh
+
+CMD ["./entrypoint.sh"]

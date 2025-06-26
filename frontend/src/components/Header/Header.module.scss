@@ -1,0 +1,74 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.Header {
+    width: 100%;
+    height: 67px;
+    background-color: $color-surface;
+    position: fixed;
+    top: 0;
+    z-index: 10;
+
+    &Inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 13px 15px;
+
+        &Image {
+            width: 39px;
+            height: 39px;
+            background: $color-border-input;
+            border-radius: 50%;
+            cursor: pointer;
+
+            & img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+            }
+        }
+
+        &Wallet {
+            width: fit-content;
+            margin-left: auto;
+            margin-right: 11px;
+            position: relative;
+
+            &Connected {
+                & button {
+                    & svg {
+                        path {
+                            fill: $color-primary;
+                        }
+                    }
+                }
+            }
+
+            & button {
+                @include mixin-button;
+                background: transparent;
+                border: 1px solid $color-primary;
+
+                span {
+                    color: $color-primary;
+                }
+            }
+        }
+
+        &Balance {
+            & button {
+                @include mixin-button;
+                background: $color-primary;
+
+                span {
+                    color: $color-text;
+                }
+
+                & svg {
+                    margin-top: 2px;
+                }
+            }
+        }
+    }
+}

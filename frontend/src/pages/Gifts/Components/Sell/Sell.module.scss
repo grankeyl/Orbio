@@ -1,0 +1,179 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.Sell {
+    width: 100%;
+    height: 100%;
+    max-height: 425px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 15;
+    background: $color-surface-tertiary;
+    border-radius: 27px 27px 0 0;
+    animation: fadeInUp 0.4s ease-out;
+    padding: 13px 16px;
+    overflow-y: scroll;
+    transform-origin: bottom;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(450px) scale(0.65) rotateX(30deg);
+    transition:
+    opacity 0.2s ease,
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.4s ease;
+    will-change: transform, opacity;
+    box-shadow: 0px 21px 32.3px 23px rgba(22, 11, 15, 0.54);
+
+    &Close {
+        width: 33px;
+        height: 33px;
+        position: absolute;
+        background: $color-surface-secondary;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+
+        & svg {
+            width: 19px;
+            height: 19px;
+
+            & path {
+                fill: $color-text-focus;
+            }
+        }
+    }
+
+    &.Active {
+        transform: translateY(0) scale(1) rotateX(0deg);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    &Inner {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        justify-content: space-between;
+        align-items: center;
+
+        &Cover {
+            position: relative;
+            width: 100%;
+            max-width: 165px;
+            aspect-ratio: 1 / 1;
+            border-radius: 22px;
+            overflow: hidden;
+            background: $color-surface-secondary;
+            display: flex;
+            align-items: center;
+            margin-top: 18px;
+            justify-content: center;
+            
+            &Image {
+                width: 100%;
+                height: 100%;
+                position: relative;
+
+                & img {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+        }
+
+        &ContentInfo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            gap: 7px;
+            margin-bottom: 10px;
+
+            &Title p {
+                @include h4;
+
+                color: $color-text;
+            }
+
+            &Number p {
+                @include title;
+
+                color: $color-text-tint;
+                margin: 0;
+            }
+        }
+
+        &Buttons {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+
+            &Button {
+
+                &:last-child {
+                    & button {
+                        background: $color-primary;
+
+                        &:hover {
+                            background: rgba($color-primary, 0.75);
+                        }
+                    }
+                }
+
+                & button {
+                    @include mixin-button;
+                    width: 100%;
+                    height: 51px;
+                    background: $color-surface-secondary;
+                    transition: background 0.35s ease;
+
+                    &:hover {
+                        background: rgba($color-surface-secondary, 0.65);
+                    }
+
+                    & span {
+                        @include subtittle;
+                        color: $color-text;
+                    }
+
+                    & svg {
+                        width: 14px;
+                        height: 14px;
+                        margin-top: 1px;
+                    }
+                    
+                    &:last-child {
+                        & svg {
+                            margin-top: 0;
+                        }
+                    }
+                }
+            } 
+        }
+    }
+}

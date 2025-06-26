@@ -1,0 +1,83 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: Install dependencies and build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+
+      - name: Clean remote frontend directory
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd project/frontend
+            rm -rf dist
+            mkdir -p dist 
+            exit
+
+      - name: Upload Dockerfile
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker/Dockerfile.frontend"
+          target: project/frontend
+          rm: false
+
+      - name: Upload nginx.conf
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "nginx.conf"
+          target: project/frontend
+          rm: false
+      
+      - name: Upload backend directory
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }} 
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "backend/*"
+          target: project/backend
+          strip_components: 2
+          rm: false
+      
+      - name: Upload dist directory
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }} 
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "frontend/dist/*"
+          target: project/frontend/dist
+          strip_components: 2
+          rm: false
+
+      - name: Restart Frontend Container
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd genero
+            docker compose up --build -d

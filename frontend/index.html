@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/photos/orbio.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>{{ import.meta.env.VITE_APP_NAME }} Market</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-CJMFXZXVHZ');
+    </script>
+
+    <script>
+      // Set up a mutation observer to wait for WebApp to be available
+      const initWebApp = () => {
+        const FULLSCREEN_ALLOWED_PLATFORMS = ['ios', 'android']
+        const webApp = window?.Telegram?.WebApp
+
+        if (webApp) {
+          webApp.expand()
+
+          const withFullScreen =
+            Number(webApp.version) >= 8 &&
+            webApp.requestFullscreen &&
+            FULLSCREEN_ALLOWED_PLATFORMS.includes(webApp.platform)
+
+          if (withFullScreen) {
+            webApp.requestFullscreen()
+          }
+
+          webApp.disableVerticalSwipes()
+
+          return true
+        }
+        return false
+      }
+
+      // Try to initialize immediately
+      if (!initWebApp()) {
+        // If not available, set up an observer to check when it becomes available
+        const observer = new MutationObserver(() => {
+          if (initWebApp()) {
+            observer.disconnect()
+          }
+        })
+
+        // Start observing the document for changes
+        observer.observe(document, {
+          childList: true,
+          subtree: true
+        })
+
+        // Also try again after a short delay as a fallback
+        setTimeout(() => {
+          initWebApp()
+          observer.disconnect()
+        }, 1000)
+      }
+    </script>
+
+    <script>
+      try {
+        const originalStartViewTransition = document.startViewTransition
+        if (originalStartViewTransition) {
+          document.startViewTransition = function (callback) {
+            const transition = originalStartViewTransition.call(document, callback)
+            transition.finished.then(() => {
+              document.body.removeAttribute('data-transition')
+            })
+            return transition
+          }
+        }
+      } catch (error) {
+        console.error('View transitions setup failed:', error)
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if (localStorage.getItem('showErudaT') === '1') {
+        window.addEventListener('DOMContentLoaded', () => {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/eruda';
+          script.onload = () => eruda.init();
+          document.body.appendChild(script);
+        });
+      }
+    </script>
+  </body>
+</html>

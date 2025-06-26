@@ -1,0 +1,91 @@
+$h4-font-size: 24px;
+$h4-font-weight: 500;
+
+$title-font-size: 20px;
+$title-font-weight: 500;
+
+$title2-font-size: 18px;
+$title2-font-weight: 500;
+
+$subtittle-font-size: 15px;
+$subtittle-font-weight: 500;
+
+$body-font-size: 14px;
+$body-font-weight: 400;
+
+$caption-font-size: 12px;
+$caption-font-weight: 500;
+
+@mixin h4 {
+  font-size: $h4-font-size;
+  font-weight: $h4-font-weight;
+}
+
+@mixin title {
+  font-size: $title-font-size;
+  font-weight: $title-font-weight;
+}
+
+@mixin title2 {
+  font-size: $title2-font-size;
+  font-weight: $title2-font-weight;
+}
+
+@mixin subtittle {
+  font-size: $subtittle-font-size;
+  font-weight: $subtittle-font-weight;
+}
+
+@mixin body {
+  font-size: $body-font-size;
+  font-weight: $body-font-weight;
+}
+
+@mixin caption {
+  font-size: $caption-font-size;
+  font-weight: $caption-font-weight;
+}
+
+
+
+// Центрирование
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+// Медиа-запрос
+@mixin respond($breakpoint) {
+  @if $breakpoint == sm {
+    @media (max-width: 640px) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: 768px) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: 1024px) { @content; }
+  }
+}
+
+// Обрезка текста
+@mixin text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// Кнопка
+@mixin mixin-button {
+  @include subtittle;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 50px;
+  gap: 5px;
+
+  span {
+    @include subtittle;
+  }
+}

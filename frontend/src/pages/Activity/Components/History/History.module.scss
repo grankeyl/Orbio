@@ -1,0 +1,196 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.History {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  animation: fadeInUp 0.4s ease-out;
+  padding-bottom: calc($MENU_HEIGHT + 18px);
+
+  &Inner {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    height: fit-content;
+
+    &Items {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      &Item {
+        width: 100%;
+        height: 82px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid rgba($color-border, 0.6);
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &Cover {
+          position: relative;
+          width: 52px;
+          height: 52px;
+          min-width: 52px;
+          min-height: 52px;
+          aspect-ratio: 1 / 1;
+          border-radius: 10px;
+          overflow: hidden;
+          background: $color-surface-secondary;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+  
+          &Image {
+            width: 100%;
+            height: 100%;
+            position: relative;
+    
+            & img {
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+        }
+
+        &Info {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+          height: fit-content;
+
+          &Top {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            width: 100%;
+            height: 100%;
+
+            &Title p {
+              @include title2;
+
+              color: $color-text;
+            }
+
+            &Number p {
+              @include subtittle;
+
+              color: $color-text-tint;
+              margin-top: 1px;
+            }
+          }
+
+          &Bottom {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            width: 100%;
+            height: 100%;
+
+            &Price {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              width: fit-content;
+              height: 100%;
+              
+              & p {
+                @include body;
+                color: $color-primary;
+              }
+  
+              & svg {
+                width: 13px;
+                height: 13px;
+                margin-top: -1px;
+
+                & path {
+                  fill: $color-primary;
+                }
+              }
+            }
+
+            &Date {
+              width: fit-content;
+              p {
+                @include body;
+                color: $color-text-tint;
+              }
+            }
+          }
+        }
+
+        &Status {
+          border-radius: 10px;
+          padding: 7px 14px;
+          width: fit-content;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba($color-green, 0.18);
+          border: 1px solid $color-green;
+          border-radius: 50px;
+          gap: 10px;
+
+          &.Withdraw {
+            background: rgba($color-primary, 0.18);
+            border: 1px solid $color-primary;
+
+            & h4 {
+              @include body;
+              color: $color-primary;
+            }
+          }
+
+          &.Purchase {
+            background: rgba($color-green, 0.18);
+            border: 1px solid $color-green;
+
+            & h4 {
+              @include body;
+              color: $color-green;
+            }
+          }
+
+          &.Listing {
+            background: rgba($color-text-focus, 0.18);
+            border: 1px solid $color-text-focus;
+
+            & h4 {
+              @include body;
+              color: $color-text-focus;
+            }
+          }
+
+          & h4 {
+            @include body;
+            color: $color-green;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,197 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.AddGift {
+    width: 100%;
+    height: 100%;
+    max-height: fit-content;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 15;
+    background: $color-surface-tertiary;
+    border-radius: 27px 27px 0 0;
+    animation: fadeInUp 0.4s ease-out;
+    padding: 18px 22px;
+    overflow-y: scroll;
+    transform-origin: bottom;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(450px) scale(0.65) rotateX(30deg);
+    transition:
+    opacity 0.2s ease,
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.4s ease;
+    will-change: transform, opacity;
+    box-shadow: 0px 21px 32.3px 23px rgba(22, 11, 15, 0.54);
+
+    &.Active {
+        transform: translateY(0) scale(1) rotateX(0deg);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &Close {
+        width: 33px;
+        height: 33px;
+        position: absolute;
+        background: $color-surface-secondary;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+
+        & svg {
+            width: 19px;
+            height: 19px;
+
+            & path {
+                fill: $color-text-focus;
+            }
+        }
+    }
+    
+    &Inner {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        justify-content: space-between;
+        align-items: center;
+
+        &Content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+
+            h4 {
+                @include title;
+            }
+
+            p {
+                @include subtittle;
+                color: $color-text-tint;
+            }
+        }
+
+        &Lists {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+
+            &Item {
+                width: 100%;
+                display: flex;
+                align-items: start;
+                gap: 14px;
+
+                &:last-child {
+                    .AddGiftInnerListsItemContent {
+                        border-bottom: none;
+                    }
+                }
+
+                &Icon {
+                    width: 21px;
+                    height: 21px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-top: 2px;
+
+                    & svg {
+                        width: 21px;
+                        height: 21px;
+                        margin-top: 1px;
+                    }
+                }
+
+                &Content {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    padding: 0 0 14px 0;
+                    border-bottom: 1px solid $color-border;
+
+                    h4 {
+                        @include title2;
+                        color: $color-text;
+                    }
+
+                    p {
+                        @include subtittle;
+                        color: $color-text-tint;
+
+                        span {
+                            color: $color-primary;
+                            text-decoration: underline;
+                        }
+                    }
+                }                
+            }
+        }
+
+        &Buttons {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            gap: 14px;
+
+            &Button {
+                width: 100%;
+
+                &:last-child {
+                    & button {
+                        background: $color-primary;
+                    }
+                }
+
+                & button {
+                    @include mixin-button;
+                    width: 100%;
+                    height: 51px;
+                    background: $color-surface-secondary;
+
+                    & span {
+                        @include subtittle;
+                        color: $color-text;
+                    }
+
+                    & svg {
+                        width: 14px;
+                        height: 14px;
+                        margin-top: 1px;
+                    }
+                    
+                    &:last-child {
+                        & svg {
+                            margin-top: 0;
+                        }
+                    }
+                }
+            } 
+        }
+    }
+}

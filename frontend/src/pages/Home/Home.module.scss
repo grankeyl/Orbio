@@ -1,0 +1,26 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.Home {
+    width: 100%;
+    height: 100%;
+    background-color: $color-background;
+    position: relative;
+
+    & main {
+        width: 100%;
+        height: 100%;
+        padding-top: 83px;
+    }
+
+    &Inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 11px;
+        gap: 18px;
+    }
+}

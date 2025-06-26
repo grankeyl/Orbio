@@ -1,0 +1,5 @@
+Use this command to install dependencies:
+npm i --legacy-peer-deps
+
+Use this command to run the app:
+npm run dev

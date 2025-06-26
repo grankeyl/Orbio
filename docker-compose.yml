@@ -1,0 +1,87 @@
+services:
+  frontend:
+    container_name: frontend
+    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: always
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.entrypoints=http"
+      - "traefik.http.routers.frontend.rule=Host(`orbiomarket.com`)"
+      - "traefik.http.middlewares.frontend-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.frontend.middlewares=frontend-https-redirect"
+      - "traefik.http.routers.frontend-secure.entrypoints=https"
+      - "traefik.http.routers.frontend-secure.rule=Host(`orbiomarket.com`)"
+      - "traefik.http.routers.frontend-secure.tls=true"
+      - "traefik.http.routers.frontend-secure.service=frontend"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.docker.network=proxy"
+    networks:
+      - app_network
+      - proxy
+
+  backend:
+    deploy:
+      restart_policy:
+        condition: always
+    volumes:
+      - ./backend:/app
+      - ./.git:/app/.git
+    build: 
+      context: ./
+      dockerfile: docker/Dockerfile.backend
+    env_file:
+      - ./backend/.env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: Fantom147!
+      POSTGRES_DB: genero
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.entrypoints=http"
+      - "traefik.http.routers.backend.rule=Host(`api.orbiomarket.com`)"
+      - "traefik.http.middlewares.backend-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.backend.middlewares=backend-https-redirect"
+      - "traefik.http.routers.backend-secure.entrypoints=https"
+      - "traefik.http.routers.backend-secure.rule=Host(`api.orbiomarket.com`)"
+      - "traefik.http.routers.backend-secure.tls=true"
+      - "traefik.http.routers.backend-secure.service=backend"
+      - "traefik.http.services.backend.loadbalancer.server.port=8448"
+      - "traefik.docker.network=proxy"
+    networks:
+      - app_network
+      - proxy
+    ports:
+      - "8448:8448"
+
+  db:
+    deploy:
+      restart_policy:
+        condition: always
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: Fantom147!
+      POSTGRES_DB: genero
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "15432:5432"
+    networks:
+      - app_network
+    
+networks:
+  app_network:
+    driver: bridge
+  proxy:
+    external: true
+
+volumes:
+  postgres_data:
+    driver: local

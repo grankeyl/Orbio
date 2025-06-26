@@ -1,0 +1,183 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.SellMarket {
+    width: calc(100% - 32px);
+    height: fit-content;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 15;
+    background: $color-surface-tertiary;
+    border-radius: 24px;
+    animation: fadeInUp 0.4s ease-out;
+    padding: 18px 18px 20px 18px;
+    overflow-y: scroll;
+    transform-origin: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -50%) scale(0.65);
+    transition:
+    opacity 0.2s ease,
+    transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0.4s ease;
+    will-change: transform, opacity;
+    box-shadow: 0px 21px 32.3px 23px rgba(22, 11, 15, 0.54);
+
+    &.Active {
+        transform: translate(-50%, -50%) scale(1) rotateX(0deg);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &Close {
+        width: 33px;
+        height: 33px;
+        position: absolute;
+        background: $color-surface-secondary;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+
+        & svg {
+            width: 19px;
+            height: 19px;
+
+            & path {
+                fill: $color-text-focus;
+            }
+        }
+    }
+    
+    &Inner {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        justify-content: space-between;
+        align-items: center;
+
+        &Content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+
+            h4 {
+                @include title;
+            }
+
+            p {
+                @include subtittle;
+                color: $color-text-tint;
+            }
+        }
+
+        &Input {
+            width: 100%;
+            height: 66px;
+            display: flex;
+            justify-content: space-between;
+            background: transparent;
+            border: 1px solid $color-border-input;
+            border-radius: 18px;
+            align-items: center;
+            padding: 0px 16px;
+            gap: 10px;
+
+            &Type {
+                width: 100%;
+
+                & input {
+                    @include h4;
+
+                    max-width: 150px;
+                    background: transparent;
+                    border: none;
+                    color: $color-text;
+                    margin-top: -3px;
+
+                    &::placeholder {
+                        color: $color-text-focus;
+                    }
+                }
+                
+                & svg {
+                    width: 20px;
+                    height: 20px;
+
+                    & path {
+                        fill: $color-text-focus;
+                    }
+                }
+            }
+        }
+
+        &Buttons {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            gap: 14px;
+
+            &Button {
+                width: 100%;
+
+                &:first-child {
+                    width: fit-content;
+                    
+                    & button {
+                        padding: 0px 30px;
+                    }
+                }
+
+                &:last-child {
+                    & button {
+                        background: $color-primary;
+                    }
+                }
+
+                & button {
+                    @include mixin-button;
+                    width: 100%;
+                    height: 51px;
+                    background: $color-surface-secondary;
+
+                    & span {
+                        @include subtittle;
+                        color: $color-text;
+                    }
+
+                    & svg {
+                        width: 14px;
+                        height: 14px;
+                        margin-top: 1px;
+                    }
+                    
+                    &:last-child {
+                        & svg {
+                            margin-top: 0;
+                        }
+                    }
+                }
+            } 
+        }
+    }
+}

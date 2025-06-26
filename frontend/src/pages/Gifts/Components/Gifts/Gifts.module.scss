@@ -1,0 +1,200 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.Gifts {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  animation: fadeInUp 0.4s ease-out;
+  padding-bottom: calc($MENU_HEIGHT + 18px);
+
+  &Inner {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    width: 100%;
+  }
+
+  &InnerItem {
+    background: $color-surface;
+    border-radius: 27px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    animation: fadeInUp 0.7s ease-out;
+    transition: transform 0.3s ease-out;
+    will-change: transform;
+
+    &:hover {
+        transform: scale(0.995);
+    }
+  }
+
+  &InnerItemCover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 22px;
+    overflow: hidden;
+    background: $color-surface-secondary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &InnerItemCoverImage {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    & img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &InnerItemCoverLike {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 38px;
+    height: 38px;
+    z-index: 1;
+    background: $color-background;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &.Active {
+      background: $color-primary;
+
+      & svg {
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+
+        & path {
+          fill: $color-text;
+          stroke: $color-text;
+          opacity: .7;
+        }
+      }
+    }
+
+    & svg {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+
+      & path {
+        fill: $color-text-focus;
+      }
+    }
+  }
+
+  &InnerItemInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    width: 100%;
+    overflow: hidden;
+
+    &Title p {
+      @include subtittle;
+      max-width: 105px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: $color-text;
+    }
+
+    &Number p {
+      @include body;
+      color: $color-text-tint;
+    }
+  }
+
+  &InnerItemPrice {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 4px;
+
+    & p {
+      @include subtittle;
+      color: $color-text;
+    }
+
+    & svg {
+      width: 13px;
+      height: 13px;
+      margin-top: -1px;
+    }
+  }
+
+  &InnerItemButtons {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &Button {
+
+      &:last-child {
+        & button {
+          background: $color-primary;
+
+          &:hover {
+            background: rgba($color-primary, 0.85);
+          }
+        }
+      }
+
+      button {
+        @include mixin-button;
+
+        width: 100%;
+        height: 38px;
+        background: $color-surface-secondary;
+        transition: background 0.35s ease;
+        will-change: background;
+
+        &:hover {
+          background: rgba($color-primary, 0.35);
+        }
+
+        & span {
+          @include subtittle;
+          color: $color-text;
+        }
+
+        & svg {
+          width: 14px;
+          height: 14px;
+          margin-top: 1px;
+        }
+      }
+    }
+  }
+}
