@@ -89,7 +89,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           source: "backend/*"
           target: project/backend
-          strip_components: 2
           rm: false
       
       - name: Upload dist directory
