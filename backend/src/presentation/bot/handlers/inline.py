@@ -22,7 +22,7 @@ async def inline_query(inline_query: InlineQuery, config: Config, bot_username: 
     if not order:
         return
 
-    direct_link = build_direct_link(bot_username, f"gift_{order.id}")
+    direct_link = build_direct_link(bot_username, f"gifts")
     rarity_text = f"🪙 Rarity: {order.rarity.name}" if order.rarity else ""
     result = InlineQueryResultArticle(
         id=str(order.id),

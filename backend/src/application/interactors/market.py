@@ -221,7 +221,7 @@ class BuyGiftInteractor(Interactor[int, OrderDM]):
         await self._history_gateway.save_many([buyer_history_data])
         await self._db_session.commit()
 
-        direct_link = build_direct_link(self._bot_info.username, f"order_{order.id}")
+        direct_link = build_direct_link(self._bot_info.username, f"gifts")
         await send_message(
             self._bot,
             text.get_buy_gift_text(order.type, order.number),
@@ -302,7 +302,7 @@ class NewBidInteractor(Interactor[BidDTO, BidSuccessDM]):
         await self._history_gateway.save(history_data)
         await self._db_session.commit()
         if order.buyer_id:
-            direct_link = build_direct_link(self._bot_info.username, f"order_{order.id}")
+            direct_link = build_direct_link(self._bot_info.username, f"gifts")
             await send_message(
                 self._bot,
                 "Your bid was outbid at the auction",
