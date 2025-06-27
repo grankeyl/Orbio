@@ -49,11 +49,11 @@ const App = () => {
   }
 
   const fetchLogin = async () => {
-    if (!window.Telegram.WebApp.initData) { return; }
+    // if (!window.Telegram.WebApp.initData) { return; }
 
     let initData = import.meta.env.VITE_APP_INIT_DATA as any;
 
-    if (window.Telegram.WebApp.initData) { initData = window.Telegram.WebApp.initData; }
+    // if (window.Telegram.WebApp.initData) { initData = window.Telegram.WebApp.initData; }
     const response = await userApi.login({ init_data: initData });
 
     if (response.type === "success") {

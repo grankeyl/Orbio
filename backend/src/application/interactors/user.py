@@ -133,7 +133,7 @@ class GetUserReferralsInteractor(Interactor[None, List[ReferralDto]]):
 
     async def __call__(self) -> list[ReferralDto]:
         referrals = await self._user_gateway.get_referrals(self._user.id, limit=10, offset=0)
-        return [r.model_dump() for r in referrals]
+        return [r.model_dump() if r else None for r in referrals]
 
 class GetUserGiftsInteractor:
     def __init__(self, market_gateway: OrderReader, user: UserDM) -> None:

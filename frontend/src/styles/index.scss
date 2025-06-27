@@ -76,6 +76,8 @@ main {
 
 .toastContainer {
   margin-top: 52px;
+  margin-top: calc(var(--tg-content-safe-area-inset-top, -35px) + 47px);
+  position: fixed;
 }
 // Toastify__toast-container Toastify__toast-container--top-right 
 .toast {
@@ -90,7 +92,8 @@ main {
   min-height: unset;
   margin-top: 10px;
   padding: 16px;
-  padding-right: 60px;
+  padding-right: 20px;
+  margin-right: -40px;
 
   &Success {
     border: 1px solid $color-border;

@@ -12,8 +12,8 @@ fi
 echo "🔧 Install dependencies"
 pip install --no-cache-dir -r requirements.txt
 
-echo "🔧 Use NFT's"
-python3 ./src/entrypoint/scripts/nfts.py
+# echo "🔧 Use NFT's"
+# python3 ./src/entrypoint/scripts/nfts.py
 
 echo "🔧 Use DB migrations"
 alembic -c alembic.ini upgrade head

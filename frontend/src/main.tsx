@@ -11,7 +11,7 @@ const rootElement = document.getElementById("root");
 createRoot(rootElement!).render(
   <StrictMode>
     <TonConnectUIProvider
-      manifestUrl="https://holdslaves.com/tonconnect-manifest.json"
+      manifestUrl="https://orbiomarket.com/tonconnect-manifest.json"
       uiPreferences={{
         theme: THEME.DARK,
       }}
