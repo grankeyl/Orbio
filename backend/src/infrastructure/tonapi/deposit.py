@@ -57,8 +57,7 @@ async def run_tracker(config: Config, bot: Bot) -> None:
             await send_message(
                 bot,
                 message,
-                [config.bot.DEPOSIT_CHAT_ID],
-                message_thread_id=config.bot.MODERATION_THREAD_ID,
+                [config.bot.DEPOSIT_CHAT_ID]
             )
 
 
