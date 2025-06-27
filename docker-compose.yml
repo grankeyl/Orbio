@@ -25,6 +25,8 @@ services:
       - proxy
 
   backend:
+    depends_on:
+      - db
     deploy:
       restart_policy:
         condition: always
@@ -42,6 +44,7 @@ services:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: F2m3r90oifjewlqf
       POSTGRES_DB: orbio
+      REDIS_URL: redis://redis:6379
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.entrypoints=http"
@@ -67,8 +70,8 @@ services:
     image: postgres:latest
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: Fantom147!
-      POSTGRES_DB: genero
+      POSTGRES_PASSWORD: F2m3r90oifjewlqf
+      POSTGRES_DB: orbio
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -76,6 +79,16 @@ services:
     networks:
       - app_network
     
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+      - proxy
+  
 networks:
   app_network:
     driver: bridge

@@ -40,20 +40,29 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('deposit_comment')
     )
-    op.execute("ALTER TYPE historytype ADD VALUE 'UNLISTED_GIFT';")
-    op.create_table('historys',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('type', postgresql.ENUM('BUY_GIFT', 'SELL_GIFT', 'BID_GIFT', 'FINAL_BID_GIFT', 'DEPOSIT', 'WITHDRAW', 'BUY_STARS', 'SELL_STARS', name='historytype'), nullable=False),
-    sa.Column('price', sa.Float(), nullable=False),
-    sa.Column('stars', sa.Integer(), nullable=True),
-    sa.Column('gift', sa.String(), nullable=True),
-    sa.Column('gift_number', sa.Integer(), nullable=True),
-    sa.Column('model_name', sa.String(), nullable=True),
-    sa.Column('user_id', sa.BigInteger(), nullable=False),
-    sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id')
+
+    historytype_enum = postgresql.ENUM(
+        'BUY_GIFT', 'SELL_GIFT', 'BID_GIFT', 'FINAL_BID_GIFT',
+        'DEPOSIT', 'WITHDRAW', 'BUY_STARS', 'SELL_STARS', 'UNLISTED_GIFT',
+        name='historytype'
     )
+    historytype_enum.create(op.get_bind())
+
+    op.create_table(
+        'historys',
+        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+        sa.Column('type', sa.Enum(name='historytype'), nullable=False),
+        sa.Column('price', sa.Float(), nullable=False),
+        sa.Column('stars', sa.Integer(), nullable=True),
+        sa.Column('gift', sa.String(), nullable=True),
+        sa.Column('gift_number', sa.Integer(), nullable=True),
+        sa.Column('model_name', sa.String(), nullable=True),
+        sa.Column('user_id', sa.BigInteger(), nullable=False),
+        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+        sa.PrimaryKeyConstraint('id')
+    )
+    
     op.create_table('orders',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('gift_id', sa.BigInteger(), nullable=False),
