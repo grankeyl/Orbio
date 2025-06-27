@@ -24,6 +24,10 @@ export function checkAmount(amount: number) {
 }
 
 export const validateBalance = (number: number): number => {
+  if (!number || isNaN(number)) {
+    return 0;
+  }
+  
   const str = number.toFixed(20);
 
   if (str.includes(".")) {

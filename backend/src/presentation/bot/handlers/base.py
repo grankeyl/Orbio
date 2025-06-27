@@ -67,18 +67,34 @@ async def start_handler(message: Message, config: Config) -> None:
         reply_markup=menu_kb(config.bot.WEBAPP_URL)
     )
 
-    await test_save_gift(
-        gift_id=3,
-        user_id=message.from_user.id,
-        number=1711,
-        type="Heart Locket",
-        pattern=0.4,
-        model=1.5,
-        background=1.2,
-        model_name="Casino Bugs",
-        pattern_name="Lovely Rain",
-        background_name="Mexican Pink"
-    )
+    session_maker = new_session_maker(config.postgres)
+    async with session_maker() as session:
+        settings_gateway = SettingsGateway(session=session)
+        try:
+            admin_gift_settings = await settings_gateway.get_one()
+            print(admin_gift_settings)
+        except Exception as e:
+            await settings_gateway.save({
+                "withdraw_gift_type": "withdraw_error",
+                "withdraw_gift_text": "There was an error when displaying the gift, try again later!",
+                "withdraw_money_type": "withdraw_error",
+                "withdraw_money_text": "There was an error when withdrawing funds, try again later!"
+            })
+            
+
+
+    # await test_save_gift(
+    #     gift_id=3,
+    #     user_id=message.from_user.id,
+    #     number=1711,
+    #     type="Heart Locket",
+    #     pattern=0.4,
+    #     model=1.5,
+    #     background=1.2,
+    #     model_name="Casino Bugs",
+    #     pattern_name="Lovely Rain",
+    #     background_name="Mexican Pink"
+    # )
 
 
 @router.message(Command("admin"))

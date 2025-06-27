@@ -24,6 +24,8 @@ const Sell: FC<SellProps> = ({ isActive, onToggle, selectedGift }) => {
   if (!selectedGift) return;
 
   const getQuickSellPrice = () => {
+    if (!appGifts || appGifts.length === 0) return;
+    
     const floor = appGifts.find((item: any) => item.type === selectedGift.type);
     if (!floor) return;
 
