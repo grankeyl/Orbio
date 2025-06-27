@@ -190,9 +190,11 @@ def get_giveaway_text(
     if len(gifts_links) >= 40:
         gifts_text = f"{gifts_text}<a href='{give_url}'>See full list</a>"
     elif len(gifts_links) > 2:
-        gifts_text = f"<blockquote expandable>{gifts_text}{'\n'.join(gifts_links)}</blockquote>"
+        joined_links = '\n'.join(gifts_links)
+        gifts_text = f"<blockquote expandable>{gifts_text}{joined_links}</blockquote>"
     else:
-        gifts_text = f"{gifts_text}{'\n'.join(gifts_links)}"
+        joined_links = '\n'.join(gifts_links)
+        gifts_text = f"{gifts_text}{joined_links}"
 
     current_participants = len(data.participants_ids) if hasattr(data, 'participants_ids') else 0
     participants_text = f"{current_participants}/{participant_number}" if data.quantity_members > 0 else f"{current_participants}"
@@ -233,10 +235,12 @@ def get_ended_giveaway_text(
 
     if len(gifts_links) >= 40:
         gifts_text = f"{gifts_text}<a href='{give_url}'>See full list</a>"
-    elif len(gifts_links) > 2:
-        gifts_text = f"<blockquote expandable>{gifts_text}{'\n'.join(gifts_links)}</blockquote>"
     else:
-        gifts_text = f"{gifts_text}{'\n'.join(gifts_links)}"
+        joined_links = '\n'.join(gifts_links)
+        if len(gifts_links) > 2:
+            gifts_text = f"<blockquote expandable>{gifts_text}{joined_links}</blockquote>"
+        else:
+            gifts_text = f"{gifts_text}{joined_links}"
 
     if data.type == GiveawayType.SUBSCRIPTION_PAID_TICKET:
         current_participants = len(data.participants_ids) if hasattr(data, 'participants_ids') else 0

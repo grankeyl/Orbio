@@ -40,8 +40,8 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: Fantom147!
-      POSTGRES_DB: genero
+      POSTGRES_PASSWORD: F2m3r90oifjewlqf
+      POSTGRES_DB: orbio
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.entrypoints=http"
@@ -52,7 +52,7 @@ services:
       - "traefik.http.routers.backend-secure.rule=Host(`api.orbiomarket.com`)"
       - "traefik.http.routers.backend-secure.tls=true"
       - "traefik.http.routers.backend-secure.service=backend"
-      - "traefik.http.services.backend.loadbalancer.server.port=8448"
+      - "traefik.http.services.backend.loadbalancer.server.port=9000"
       - "traefik.docker.network=proxy"
     networks:
       - app_network

@@ -79,7 +79,7 @@ def giveaway_kb(url: str, username, price: float | None, user_id: int) -> Inline
     keyboard = InlineKeyboardBuilder()
     ref_link = build_direct_link(username, encode_payload(str(user_id)))
     keyboard.row(
-        InlineKeyboardButton(text=f"🙋‍♂️ Participate{f" ({price} TON)" if price else ""}", url=url),
+        InlineKeyboardButton(text=f"🙋‍♂️ Participate{' (' + str(price) + ' TON)' if price else ''}", url=url)
     )
     keyboard.row(InlineKeyboardButton(text=f"🛍 Trade Gifts", url=ref_link))
     return keyboard.as_markup()

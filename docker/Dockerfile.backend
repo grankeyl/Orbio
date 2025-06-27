@@ -6,8 +6,6 @@ RUN apt-get update && apt-get install -y curl build-essential && \
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
-COPY backend/pyproject.toml ./pyproject.toml
-
 COPY backend/ ./
 
 RUN chmod +x ./entrypoint.sh
