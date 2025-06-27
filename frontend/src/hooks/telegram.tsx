@@ -2,6 +2,7 @@ import WebApp from '@twa-dev/sdk';
 
 export const TelegramModule = {
   async initMiniApp() {
+    WebApp.backgroundColor = '#100B0D';
     WebApp.requestWriteAccess();
     WebApp.disableVerticalSwipes();
     WebApp.ready();

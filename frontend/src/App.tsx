@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Routes, Route } from "react-router"
+import { Routes, Route, useNavigate } from "react-router"
 import { useAppStore } from "@/stores/app.store";
 import { TelegramModule } from "@/hooks/telegram";
 
@@ -26,6 +26,8 @@ import "@/styles/index.scss"
 import "@/styles/fonts/stylesheet.css"
 
 const App = () => {
+  const navigate = useNavigate();
+  
   const { setMeData, setAppGifts, setAppVariables } = useAppStore();
 
   const [isTokenReady, setIsTokenReady] = useState(false)
@@ -35,9 +37,19 @@ const App = () => {
     TelegramModule.initMiniApp();
   }, []);
 
+  const checkStartParam = () => {
+    const startParam = TelegramModule.checkStartParam();
+
+    if (startParam && startParam.startsWith("gift_")) {
+      const giftId = startParam.split("_")[1];
+      if (giftId) {
+        navigate(`/gift/${giftId}`);
+      }
+    }
+  }
+
   const fetchLogin = async () => {
     let initData = import.meta.env.VITE_APP_INIT_DATA as any;
-    console.log(window.Telegram.WebApp.initData);
     if (window.Telegram.WebApp.initData) { initData = window.Telegram.WebApp.initData; }
     const response = await userApi.login({ init_data: initData });
 
@@ -94,6 +106,7 @@ const App = () => {
     fetchMeData();
     fetchGifts();
     fetchVariables();
+    checkStartParam();
   }, [isTokenReady])
 
   if (isLoading) { return ( <Loader /> ) }

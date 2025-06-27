@@ -66,44 +66,55 @@ const Model: FC<ModelProps> = ({ isActive, onToggle }) => {
     <div className={cn(Styles.Model, isActive && Styles.Active)} onClick={onToggle}>
       <div className={Styles.ModelInner}>
 
-        {Object.entries(models).map(([giftName, giftData]: any) => (
-          <div className={Styles.ModelInnerI} key={giftName}>
-            <h2 className={Styles.ModelInnerITitle}>{giftName}</h2>
+        {!models || Object.keys(models).length === 0 ? (
+          <div className={Styles.ModelInnerEmpty}>
+            <p>No models available</p>
+          </div>
+        ) : (
+          Object.entries(models).map(([giftName, giftData]: any) => (
+            <div className={Styles.ModelInnerI} key={giftName}>
+              <h2 className={Styles.ModelInnerITitle}>{giftName}</h2>
 
-            {giftData.models.map((model: any, i: number) => (
-              <div key={i} className={Styles.ModelInnerI}>
-                <div className={Styles.ModelInnerItem} onClick={() => handleSelectModel(model.name)}>
-                  <div className={cn(Styles.ModelInnerItemSelect, selectedModels.includes(model.name) && Styles.Active)}>
-                    <div className={Styles.ModelInnerItemSelectCircle}></div>
-                  </div>
-                  <div className={Styles.ModelInnerItemContent}>
-                    <div className={Styles.ModelInnerItemContentImage}>
-                      <img
-                        src={getGiftModel(giftName, model.name)}
-                        alt={model.name}
-                      />
-                    </div>
-                    <div className={Styles.ModelInnerItemContentInfo}>
-                      <div className={Styles.ModelInnerItemContentInfoTitle}>
-                        <p>{model.name}</p>
+              {!giftData.models || giftData.models.length === 0 ? (
+                <div className={Styles.ModelInnerEmpty}>
+                  <p>No models available</p>
+                </div>
+              ) : (
+                giftData.models.map((model: any, i: number) => (
+                  <div key={i} className={Styles.ModelInnerI}>
+                    <div className={Styles.ModelInnerItem} onClick={() => handleSelectModel(model.name)}>
+                      <div className={cn(Styles.ModelInnerItemSelect, selectedModels.includes(model.name) && Styles.Active)}>
+                        <div className={Styles.ModelInnerItemSelectCircle}></div>
+                      </div>
+                      <div className={Styles.ModelInnerItemContent}>
+                        <div className={Styles.ModelInnerItemContentImage}>
+                          <img
+                            src={getGiftModel(giftName, model.name)}
+                            alt={model.name}
+                          />
+                        </div>
+                        <div className={Styles.ModelInnerItemContentInfo}>
+                          <div className={Styles.ModelInnerItemContentInfoTitle}>
+                            <p>{model.name}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className={Styles.ModelInnerItemPercent}>
+                        <button>
+                          <span>{model.rarity} %</span>
+                        </button>
                       </div>
                     </div>
-                  </div>
-                  <div className={Styles.ModelInnerItemPercent}>
-                    <button>
-                      <span>{model.rarity} %</span>
-                    </button>
-                  </div>
-                </div>
 
-                <div className={Styles.ModelInnerItem}>
-                  <div className={Styles.ModelInnerItemBorder}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-
+                    <div className={Styles.ModelInnerItem}>
+                      <div className={Styles.ModelInnerItemBorder}></div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   )

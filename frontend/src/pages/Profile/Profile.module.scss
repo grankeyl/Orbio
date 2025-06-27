@@ -29,7 +29,7 @@
     & main {
         width: 100%;
         height: 100%;
-        padding-top: 45px;
+        padding-top: calc(var(--tg-content-safe-area-inset-top, -35px) + 70px);
     }
 
     &Inner {
@@ -241,6 +241,9 @@
                     p {
                         @include subtittle;
                         color: $color-text-tint;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
                     }
                 }
 

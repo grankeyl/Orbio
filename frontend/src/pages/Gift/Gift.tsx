@@ -36,6 +36,11 @@ const Gift: FC = () => {
     const response = await marketApi.giftGetById(Number(id)) as any;
     if (response.type === "success" && response.data) {
       const data = response.data;
+
+      if (data && data.is_active === false) {
+        navigate("/");
+      }
+
       setGift(data);
 
       const lottieUrl = getGiftLottie(data.type, data.number);
@@ -90,7 +95,7 @@ const Gift: FC = () => {
     fetchGifts();
   }, [id]);
 
-  if (!gift || !animationData) return <Loader />;
+  if (!gift || gift.is_active === false || !animationData) return <Loader />;
 
   return (
     <div className={Styles.Gift}>

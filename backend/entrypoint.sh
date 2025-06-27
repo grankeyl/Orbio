@@ -16,6 +16,7 @@ pip install --no-cache-dir -r requirements.txt
 # python3 ./src/entrypoint/scripts/nfts.py
 
 echo "🔧 Use DB migrations"
+# alembic revision --autogenerate -m "Initial migration"
 alembic -c alembic.ini upgrade head
 
 echo "🔧 Start app"
