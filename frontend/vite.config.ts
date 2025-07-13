@@ -38,7 +38,8 @@ export default defineConfig({
     }),
   ],
   build: {
-    minify: "esbuild",
+    minify: false,
+    sourcemap: true,
     rollupOptions: {
       treeshake: true,
       output: {
