@@ -119,10 +119,18 @@
 
             &Info {
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 width: 100%;
                 gap: 7px;
+
+                &Flexed {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 7px;
+                }
 
                 &Title p {
                     @include title;
@@ -133,6 +141,13 @@
 
                 &Number p {
                     @include title;
+
+                    color: $color-text-tint;
+                    white-space: nowrap;
+                }
+
+                &Id p {
+                    @include subtittle;
 
                     color: $color-text-tint;
                     white-space: nowrap;

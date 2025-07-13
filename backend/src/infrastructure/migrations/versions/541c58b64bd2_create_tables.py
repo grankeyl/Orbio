@@ -1,8 +1,8 @@
-"""initial
+"""create tables
 
-Revision ID: 447900c1888f
+Revision ID: 541c58b64bd2
 Revises: 
-Create Date: 2025-06-22 16:21:12.209112
+Create Date: 2025-07-04 22:28:28.644277
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = '447900c1888f'
+revision: str = '541c58b64bd2'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,6 +24,15 @@ def upgrade() -> None:
     op.create_table('lts',
     sa.Column('last_lt', sa.BigInteger(), autoincrement=False, nullable=False),
     sa.PrimaryKeyConstraint('last_lt')
+    )
+    op.create_table('settings',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('withdraw_gift_type', sa.String(), nullable=True),
+    sa.Column('withdraw_gift_text', sa.String(), nullable=True),
+    sa.Column('withdraw_money_type', sa.String(), nullable=True),
+    sa.Column('withdraw_money_text', sa.String(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
     sa.Column('id', sa.BigInteger(), autoincrement=False, nullable=False),
@@ -40,29 +49,19 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('deposit_comment')
     )
-
-    historytype_enum = postgresql.ENUM(
-        'BUY_GIFT', 'SELL_GIFT', 'BID_GIFT', 'FINAL_BID_GIFT',
-        'DEPOSIT', 'WITHDRAW', 'BUY_STARS', 'SELL_STARS', 'UNLISTED_GIFT',
-        name='historytype'
+    op.create_table('historys',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('type', postgresql.ENUM('BUY_GIFT', 'SELL_GIFT', 'BID_GIFT', 'FINAL_BID_GIFT', 'DEPOSIT', 'WITHDRAW', 'BUY_STARS', 'SELL_STARS', 'UNLISTED_GIFT', name='historytype'), nullable=False),
+    sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('stars', sa.Integer(), nullable=True),
+    sa.Column('gift', sa.String(), nullable=True),
+    sa.Column('gift_number', sa.Integer(), nullable=True),
+    sa.Column('model_name', sa.String(), nullable=True),
+    sa.Column('user_id', sa.BigInteger(), nullable=False),
+    sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id')
     )
-    historytype_enum.create(op.get_bind())
-
-    op.create_table(
-        'historys',
-        sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-        sa.Column('type', sa.Enum(name='historytype'), nullable=False),
-        sa.Column('price', sa.Float(), nullable=False),
-        sa.Column('stars', sa.Integer(), nullable=True),
-        sa.Column('gift', sa.String(), nullable=True),
-        sa.Column('gift_number', sa.Integer(), nullable=True),
-        sa.Column('model_name', sa.String(), nullable=True),
-        sa.Column('user_id', sa.BigInteger(), nullable=False),
-        sa.Column('created_at', sa.TIMESTAMP(timezone=True), server_default=sa.text('now()'), nullable=False),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
-        sa.PrimaryKeyConstraint('id')
-    )
-    
     op.create_table('orders',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('gift_id', sa.BigInteger(), nullable=False),
@@ -146,5 +145,6 @@ def downgrade() -> None:
     op.drop_table('orders')
     op.drop_table('historys')
     op.drop_table('users')
+    op.drop_table('settings')
     op.drop_table('lts')
     # ### end Alembic commands ###

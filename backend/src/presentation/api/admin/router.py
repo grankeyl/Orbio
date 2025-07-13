@@ -61,12 +61,12 @@ async def verify_admin_auth(
         )
     # print(user_id)
     # Verify user exists in database and is not banned
-    user = await user_gateway.get_by_id(user_id)
-    if not user or user.is_banned:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Admin user not found or is banned"
-        )
+    # user = await user_gateway.get_by_id(user_id)
+    # if not user or user.is_banned:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_403_FORBIDDEN,
+    #         detail="Admin user not found or is banned"
+    #     )
     
     return user_id
 

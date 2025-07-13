@@ -1,13 +1,19 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.payload import encode_payload
+from src.entrypoint.config import Config
 
 from src.application.common.utils import build_direct_link
+
+config = Config()
 
 def menu_kb(store_url: str) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     keyboard.row(
         InlineKeyboardButton(text="🎁 Open Store", web_app=WebAppInfo(url=store_url)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="🔧 Support", url=f"https://t.me/{config.bot.SUPPORT_USERNAME.replace('@', '')}"),
     )
     return keyboard.as_markup()
 
@@ -17,12 +23,35 @@ def admin_kb(admin_url: str) -> InlineKeyboardMarkup:
         InlineKeyboardButton(text="Веб-панель", web_app=WebAppInfo(url=admin_url)),
     )
     keyboard.row(
+        InlineKeyboardButton(text="🎁 Поиск подарка", callback_data="admin:search_gift"),
+    )
+    keyboard.row(
         InlineKeyboardButton(text="⚙️ Настройки", callback_data="admin:settings"),
+    )
+    return keyboard.as_markup()
+
+def admin_gift_kb(gift_id: int) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        InlineKeyboardButton(text="🕹 Изменить цену", callback_data="admin_gift:edit_price:" + str(gift_id)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back"),
+    )
+    return keyboard.as_markup()
+
+def admin_back() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back"),
     )
     return keyboard.as_markup()
 
 def admin_settings_kb() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        InlineKeyboardButton(text="🕹 Изменить цены", callback_data="admin_settings:edit_gift_prices"),
+    )
     keyboard.row(
         InlineKeyboardButton(text="🎁 Вывод подарка", callback_data="admin_settings:withdraw_gift"),
     )

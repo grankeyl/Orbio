@@ -12,6 +12,7 @@ import * as marketApi from "@/api/services/market.service";
 import Lottie from "lottie-react";
 import Styles from "./Gift.module.scss";
 import Loader from "@/components/Loader/Loader";
+import { validateBalance } from "@/utils/app";
 
 
 const Gift: FC = () => {
@@ -126,11 +127,16 @@ const Gift: FC = () => {
             </div>
 
             <div className={Styles.GiftInnerContentInfo}>
-              <div className={Styles.GiftInnerContentInfoTitle}>
-                <p>{gift.type}</p>
+              <div className={Styles.GiftInnerContentInfoFlexed}>
+                <div className={Styles.GiftInnerContentInfoTitle}>
+                  <p>{gift.type}</p>
+                </div>
+                <div className={Styles.GiftInnerContentInfoNumber}>
+                  <p>#{gift.number}</p>
+                </div>
               </div>
-              <div className={Styles.GiftInnerContentInfoNumber}>
-                <p>#{gift.number}</p>
+              <div className={Styles.GiftInnerContentInfoId}>
+                <p>ID: {gift.id}</p>
               </div>
             </div>
           </div>
@@ -177,7 +183,7 @@ const Gift: FC = () => {
           </div>
           <div className={Styles.GiftBottomInnerButton}>
             <button onClick={() => handleBuy(gift)}>
-              <span>Buy for {gift.price}</span>
+              <span>Buy for {validateBalance(gift.price)}</span>
               <TonWhiteIcon />
             </button>
           </div>

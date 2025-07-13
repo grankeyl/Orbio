@@ -353,3 +353,14 @@ class MarketGateway(OrderSaver, OrderReader):
         )
         result = await self._session.execute(stmt)
         return result.scalar_one()
+
+    async def edit_gift_price(self, gift_id: int, price: float) -> None:
+        stmt = update(Order).values(price=price).where(Order.id == gift_id)
+        await self._session.execute(stmt)
+        await self._session.commit()
+
+    async def edit_gift_prices(self, percent: int) -> None:
+        multiplier = 1 + (percent / 100)
+        stmt = update(Order).values(price=Order.price * multiplier)
+        await self._session.execute(stmt)
+        await self._session.commit()

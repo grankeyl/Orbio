@@ -45,6 +45,7 @@ class BotConfig(BaseModel):
     BOT_TOKEN: str
     CHANNEL_ID: str
     BOT_ID: str
+    SUPPORT_USERNAME: str
     WEBAPP_URL: str
     WEBAPP_API_URL: str
     DEPOSIT_CHAT_ID: str

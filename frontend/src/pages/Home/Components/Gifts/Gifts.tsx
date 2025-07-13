@@ -5,6 +5,7 @@ import { useAppStore } from "@/stores/app.store";
 import { getGiftImage } from "@/utils/gift";
 import { HeartIcon, TonWhiteIcon } from "@/components/Icons";
 import { showToast } from "@/utils/showToast";
+import { validateBalance } from "@/utils/app";
 
 import Styles from "./Gifts.module.scss";
 
@@ -80,7 +81,7 @@ const Gifts: FC<GiftsProps> = ({ gifts = [] }) => {
               <div className={Styles.GiftsInnerItemButtons} onClick={() => handleNavigate(gift.id)}>
                 <div className={Styles.GiftsInnerItemButtonsButton}>
                   <button>
-                    <span>{gift.price}</span>
+                    <span>{validateBalance(gift.price)}</span>
                     <TonWhiteIcon />
                   </button>
                 </div>

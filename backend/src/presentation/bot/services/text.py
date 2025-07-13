@@ -75,11 +75,16 @@ def get_admin_text(
     count_all_gifts: int,
     count_completed_gifts: int,
     count_active_gifts: int,
-    trading_volume: float,
-    total_balance: float,
-    nest_gifter_balance: float,
+    trading_volume: float | None,
+    total_balance: float | None,
+    nest_gifter_balance: float | None,
 ) -> str:
     config = Config()
+
+    total_balance = total_balance or 0.0
+    trading_volume = trading_volume or 0.0
+    nest_gifter_balance = nest_gifter_balance or 0.0
+
     return (
         f"📊 <b>Admin Panel</b>\n\n"
         f"👥 <b>Пользователи:</b> {count_users}\n"

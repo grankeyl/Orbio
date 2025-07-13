@@ -16,6 +16,7 @@ echo "🔧 Use NFT's"
 python3 ./src/entrypoint/scripts/nfts.py
 
 echo "🔧 Use DB migrations"
+alembic revision --autogenerate -m "create tables"
 alembic -c alembic.ini upgrade head
 
 echo "🚀 Start deposit listener in background"

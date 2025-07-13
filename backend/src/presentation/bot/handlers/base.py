@@ -13,12 +13,13 @@ from src.application.common.const import GiveawayType
 from src.application.common.utils import generate_gifts, get_give_img, generate_random_id, build_direct_link, dict2obj
 from src.application.dto.giveaway import CreateGiveawayDTO
 from src.entrypoint.config import Config
-from src.presentation.bot.keyboards.base import menu_kb, admin_kb, admin_settings_kb, admin_settings_withdraw_gift_kb, admin_settings_withdraw_gift_change_type_kb, giveaway_kb
+from src.presentation.bot.keyboards.base import menu_kb, admin_kb, admin_gift_kb, admin_settings_kb, admin_settings_withdraw_gift_kb, admin_settings_withdraw_gift_change_type_kb, giveaway_kb, admin_back
 from src.presentation.bot.keyboards.base import admin_settings_withdraw_money_change_type_kb, admin_settings_withdraw_money_kb
 from src.presentation.bot.services import market, text, user
 from src.presentation.bot.services.text import get_admin_text
-from src.presentation.bot.handlers.states import StatesAdminSettingsWithdrawGift, StatesAdminSettingsWithdrawMoney
+from src.presentation.bot.handlers.states import StatesAdminSearchGift, StatesAdminSearchGiftEdit, StatesAdminSettingsWithdrawGift, StatesAdminSettingsWithdrawMoney, StatesAdminSettingsEditGiftPrices
 from src.infrastructure.gateways.settings import SettingsGateway
+from src.infrastructure.gateways.market import MarketGateway
 from src.infrastructure.database.session import new_session_maker
 
 from src.application.common.utils import calculate_gift_rarity
@@ -40,6 +41,7 @@ async def test_save_gift(
     pattern_name: str,
     model_name: str,
     background_name: str,
+    price: float = 0.0,
 ) -> None:
     order_data = CreateOrderDM(
         gift_id=gift_id,
@@ -54,6 +56,7 @@ async def test_save_gift(
         background_name=background_name,
         rarity=calculate_gift_rarity(model),
         is_active=True,
+        price=price,
     )
     await create_order(order_data, config.postgres)
 
@@ -80,21 +83,20 @@ async def start_handler(message: Message, config: Config) -> None:
                 "withdraw_money_type": "withdraw_error",
                 "withdraw_money_text": "There was an error when withdrawing funds, try again later!"
             })
-            
 
-
-    # await test_save_gift(
-    #     gift_id=3,
-    #     user_id=message.from_user.id,
-    #     number=1711,
-    #     type="Heart Locket",
-    #     pattern=0.4,
-    #     model=1.5,
-    #     background=1.2,
-    #     model_name="Casino Bugs",
-    #     pattern_name="Lovely Rain",
-    #     background_name="Mexican Pink"
-    # )
+    await test_save_gift(
+        gift_id=3,
+        user_id=message.from_user.id,
+        number=1711,
+        type="Heart Locket",
+        pattern=0.4,
+        model=1.5,
+        background=1.2,
+        model_name="Casino Bugs",
+        pattern_name="Lovely Rain",
+        background_name="Mexican Pink",
+        price=23.2
+    )
 
 
 @router.message(Command("admin"))
@@ -130,14 +132,21 @@ async def admin_handler(message: Message, config: Config) -> None:
 
 
 @router.callback_query(F.data.startswith("admin:"))
-async def withdraw_gift_callback(callback_query: CallbackQuery, config: Config) -> None:
+async def withdraw_gift_callback(callback_query: CallbackQuery, config: Config, state: FSMContext) -> None:
     if callback_query.from_user.id not in config.bot.moderators_chat_id:
         pass
     
     try:
         data = callback_query.data.split(":")[1]
 
-        if data == "settings":
+        if data == "search_gift":
+            await callback_query.message.edit_text(
+                text="<b>🔍 Поиск подарка</b>\n\n Введите ID подарка:",
+                reply_markup=admin_back()
+            )
+            await state.set_state(StatesAdminSearchGift.gift_id)
+
+        elif data == "settings":
             await callback_query.message.edit_text(
                 text="<b>⚙️ Настройки проекта</b>\n\n Выберите опцию для изменения:",
                 reply_markup=admin_settings_kb()
@@ -145,6 +154,148 @@ async def withdraw_gift_callback(callback_query: CallbackQuery, config: Config) 
 
     except Exception as e:
         print(e)
+
+
+@router.message(StatesAdminSearchGift.gift_id)
+async def receive_new_text(message: Message, state: FSMContext, config: Config):
+    if message.from_user.id not in config.bot.moderators_chat_id:
+        return await message.answer("⛔ Нет доступа")
+    
+    if not message.text.isdigit():
+        await message.answer(
+            "❌ Неверный формат команды",
+            reply_markup=admin_back()
+        )
+    else:
+
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            market_gateway = MarketGateway(session=session)
+            gift = await market_gateway.get_one(id=int(message.text))
+
+        if not gift:
+            await message.answer(
+                "❌ Подарок не найден",
+                reply_markup=admin_back()
+            )
+
+        giftLink = f"https://t.me/nft/{gift.type.replace(' ', '').replace('-', '')}-{gift.number}"
+
+        await message.answer(
+            f"<b>🎁 Подарок #{gift.id} найден</b>\n\n"
+            f"<b>Владелец:</b> <code>{gift.seller_id}</code>\n\n"
+            f"<b>Тип:</b> {gift.type}\n"
+            f"<b>Номер:</b> #{gift.number}\n"
+            f"<b>Цена:</b> {round(gift.price, 2)} TON\n\n"
+            f"<b>Модель:</b> {gift.model_name} (x{gift.model})\n"
+            f"<b>Узор:</b> {gift.pattern_name} (x{gift.pattern})\n"
+            f"<b>Фон:</b> {gift.background_name} (x{gift.background})\n\n"
+            f"{giftLink}",
+            reply_markup=admin_gift_kb(gift.id)
+        )
+        await state.clear()
+
+
+@router.callback_query(F.data.startswith("admin_gift:"))
+async def show_withdraw_gift_settings(callback: CallbackQuery, config: Config, state: FSMContext):
+    if callback.from_user.id not in config.bot.moderators_chat_id:
+        return await callback.answer("⛔ Нет доступа", show_alert=True)
+    
+    data = callback.data.split(":")[1]
+
+    if data == "edit_price":
+        gift_id = int(callback.data.split(":")[2])
+
+        await callback.message.edit_text(
+            "<b>✍️ Введите новую цену подарка</b>\n\nВведите цену в TON:"
+        )
+
+        await state.set_state(StatesAdminSearchGiftEdit.gift_price)
+        await state.update_data(gift_id=gift_id)
+
+
+@router.message(StatesAdminSearchGiftEdit.gift_price)
+async def receive_new_text(message: Message, state: FSMContext, config: Config):
+    if message.from_user.id not in config.bot.moderators_chat_id:
+        return await message.answer("⛔ Нет доступа")
+    
+    try:
+        stateData = await state.get_data()
+        stateGiftId = stateData["gift_id"]
+
+        value = float(message.text.strip())
+        if value <= 0:
+            await message.answer(
+                "❌ Неверный формат команды",
+                reply_markup=admin_back()
+            )
+
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            market_gateway = MarketGateway(session=session)
+            await market_gateway.edit_gift_price(gift_id=stateGiftId, price=value)
+
+        await message.answer(
+            "<b>✅ Цена успешно изменена</b>\n\nПодарок теперь стоит " + str(value) + " TON",
+            reply_markup=admin_back()
+        )
+    except ValueError:
+        await message.answer(
+            "❌ Неверный формат команды",
+            reply_markup=admin_back()
+        )
+
+
+@router.callback_query(F.data == "admin_settings:edit_gift_prices")
+async def show_withdraw_gift_settings(callback: CallbackQuery, config: Config, state: FSMContext):
+    if callback.from_user.id not in config.bot.moderators_chat_id:
+        return await callback.answer("⛔ Нет доступа", show_alert=True)
+
+    await callback.message.edit_text(
+        "<b>🕹 Изменить цены всех подарков</b>\n\nВведите процент (+10, -10):"
+    )
+
+    await state.set_state(StatesAdminSettingsEditGiftPrices.edit_price)
+
+
+@router.message(StatesAdminSettingsEditGiftPrices.edit_price)
+async def receive_new_text(message: Message, state: FSMContext, config: Config):
+    if message.from_user.id not in config.bot.moderators_chat_id:
+        return await message.answer("⛔ Нет доступа")
+    
+    if not message.text.startswith("+") and not message.text.startswith("-"):
+        await message.answer(
+            "❌ Неверный формат команды",
+            reply_markup=admin_back()
+        )
+
+    if message.text.startswith("+"):
+        amount = int(message.text.split("+")[1])
+        await state.clear()
+
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            market_gateway = MarketGateway(session=session)
+            await market_gateway.edit_gift_prices(percent=amount)
+
+        await message.answer(
+            "<b>✅ Цена успешно изменена</b>\n\nВсе подарки повышены в цене на " + str(amount) + "%",
+            reply_markup=admin_back()
+        )
+    
+    if message.text.startswith("-"):
+        amount = int(message.text.split("-")[1])
+        await state.clear()
+
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            market_gateway = MarketGateway(session=session)
+            await market_gateway.edit_gift_prices(percent=-amount)
+
+        await message.answer(
+            "<b>✅ Цена успешно изменена</b>\n\nВсе подарки понижены в цене на " + str(amount) + "%",
+            reply_markup=admin_back()
+        )
 
 
 @router.callback_query(F.data == "admin_settings:withdraw_gift")
@@ -206,7 +357,9 @@ async def show_withdraw_money_settings(callback: CallbackQuery, config: Config):
 
 
 @router.callback_query(F.data == "admin_settings:back")
-async def show_withdraw_money_settings(callback: CallbackQuery, config: Config):
+async def show_withdraw_money_settings(callback: CallbackQuery, config: Config, state: FSMContext):
+    await state.clear()
+
     count_users = await user.get_count_users(config.postgres)
     total_count, completed_count, active_count = await market.get_count_gifts(config.postgres)
     trading_volume = await market.get_total_trading_volume(config.postgres)

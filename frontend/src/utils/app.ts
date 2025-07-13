@@ -35,8 +35,8 @@ export const validateBalance = (number: number): number => {
 
     const trimmedDecimal = decimalPart.replace(/0+$/, "");
 
-    if (trimmedDecimal.length > 3) {
-      return parseFloat(`${integerPart}.${trimmedDecimal.slice(0, 3)}`);
+    if (trimmedDecimal.length > 2) {
+      return parseFloat(`${integerPart}.${trimmedDecimal.slice(0, 2)}`);
     }
   }
 
