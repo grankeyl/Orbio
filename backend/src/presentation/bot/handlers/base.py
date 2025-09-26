@@ -6,6 +6,8 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.types.input_file import FSInputFile
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
+from aiogram.utils.payload import encode_payload
+from aiogram.types import LinkPreviewOptions
 
 from datetime import datetime, timedelta, timezone
 
@@ -13,18 +15,22 @@ from src.application.common.const import GiveawayType
 from src.application.common.utils import generate_gifts, get_give_img, generate_random_id, build_direct_link, dict2obj
 from src.application.dto.giveaway import CreateGiveawayDTO
 from src.entrypoint.config import Config
-from src.presentation.bot.keyboards.base import menu_kb, admin_kb, admin_gift_kb, admin_settings_kb, admin_settings_withdraw_gift_kb, admin_settings_withdraw_gift_change_type_kb, giveaway_kb, admin_back
-from src.presentation.bot.keyboards.base import admin_settings_withdraw_money_change_type_kb, admin_settings_withdraw_money_kb
+from src.presentation.bot.keyboards.base import menu_kb, admin_kb, admin_gift_kb, admin_settings_kb, admin_settings_withdraw_gift_kb, admin_settings_withdraw_gift_change_type_kb, giveaway_kb, admin_back, admin_user_kb
+from src.presentation.bot.keyboards.base import admin_settings_withdraw_money_change_type_kb, admin_settings_withdraw_money_kb, admin_user_withdraw_kb, admin_user_settings_withdraw_gift_kb, admin_user_settings_withdraw_money_kb, admin_user_settings_withdraw_gift_change_type_kb, admin_user_settings_withdraw_money_change_type_kb
 from src.presentation.bot.services import market, text, user
 from src.presentation.bot.services.text import get_admin_text
-from src.presentation.bot.handlers.states import StatesAdminSearchGift, StatesAdminSearchGiftEdit, StatesAdminSettingsWithdrawGift, StatesAdminSettingsWithdrawMoney, StatesAdminSettingsEditGiftPrices
+from src.presentation.bot.handlers.states import StatesAdminSearchUser, StatesAdminSearchUserActions, StatesAdminSearchGift, StatesAdminSearchGiftEdit, StatesAdminSettingsWithdrawGift, StatesAdminSettingsWithdrawMoney, StatesAdminSettingsEditGiftPrices
 from src.infrastructure.gateways.settings import SettingsGateway
 from src.infrastructure.gateways.market import MarketGateway
+from src.infrastructure.gateways.user import UserGateway
 from src.infrastructure.database.session import new_session_maker
+from src.domain.entities.user import UpdateUserBalanceDM, UserDM, UserSettingsDM
 
 from src.application.common.utils import calculate_gift_rarity
 from src.domain.entities.market import CreateOrderDM
 from src.presentation.bot.services.market import create_order
+from src.application.interactors.nfts import NftsInteractor
+
 
 router = Router()
 config = Config()
@@ -84,19 +90,19 @@ async def start_handler(message: Message, config: Config) -> None:
                 "withdraw_money_text": "There was an error when withdrawing funds, try again later!"
             })
 
-    await test_save_gift(
-        gift_id=3,
-        user_id=message.from_user.id,
-        number=1711,
-        type="Heart Locket",
-        pattern=0.4,
-        model=1.5,
-        background=1.2,
-        model_name="Casino Bugs",
-        pattern_name="Lovely Rain",
-        background_name="Mexican Pink",
-        price=23.2
-    )
+    # await test_save_gift(
+    #     gift_id=3,
+    #     user_id=message.from_user.id,
+    #     number=1711,
+    #     type="Heart Locket",
+    #     pattern=0.4,
+    #     model=1.5,
+    #     background=1.2,
+    #     model_name="Casino Bugs",
+    #     pattern_name="Lovely Rain",
+    #     background_name="Mexican Pink",
+    #     price=23.2
+    # )
 
 
 @router.message(Command("admin"))
@@ -139,7 +145,14 @@ async def withdraw_gift_callback(callback_query: CallbackQuery, config: Config, 
     try:
         data = callback_query.data.split(":")[1]
 
-        if data == "search_gift":
+        if data == "search_user":
+            await callback_query.message.edit_text(
+                text="<b>🔍 Поиск пользователя</b>\n\n Введите UserID, либо @username:",
+                reply_markup=admin_back()
+            )
+            await state.set_state(StatesAdminSearchUser.user)
+
+        elif data == "search_gift":
             await callback_query.message.edit_text(
                 text="<b>🔍 Поиск подарка</b>\n\n Введите ID подарка:",
                 reply_markup=admin_back()
@@ -155,6 +168,480 @@ async def withdraw_gift_callback(callback_query: CallbackQuery, config: Config, 
     except Exception as e:
         print(e)
 
+
+@router.message(StatesAdminSearchUser.user)
+async def receive_new_text(message: Message, state: FSMContext, config: Config):
+    if message.from_user.id not in config.bot.moderators_chat_id:
+        return await message.answer("⛔ Нет доступа")
+    
+    if message.text and message.text.startswith('@'):
+        user_id = message.text.split('@')[1]
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            user = await user_gateway.get_by_username(user_id)
+
+        if not user:
+            await message.answer(
+                "❌ Пользователь не найден",
+                reply_markup=admin_back()
+            )
+        else:
+            await message.answer(
+                f"<b>Id: {user.id}</b>\n" +
+                f"<b>Ник: {user.username}</b>\n" +
+                f"<b>Юзернейм: @{user.username}</b>\n" +
+                f"<b>Роль: {user.role}</b>\n\n" +
+                f"<b>Баланс: {user.balance} TON</b>\n" +
+                f"<b>Внесено всего: {user.deposit_amount} TON</b>\n\n" +
+                f"<b>Подарки (без листинга): {user.count_gifts}</b>\n" +
+                f"<b>Подарки (в листинге): {user.count_gifts_in_list}</b>\n\n" +
+                f"<b>Рефералы: {user.count_referrals}</b>\n" +
+                f"<b>Реферальная ссылка: {user.referral_link}</b>\n\n" +
+                f"<b>Кошелек: {user.wallet_address}</b>\n" +
+                f"<b>Дата регистрации: {user.created_at}</b>\n\n",
+                reply_markup=admin_user_kb(
+                    user_id=user.id,
+                    role=user.role,
+                    freezed=False,
+                    banned=False
+                )
+            )
+            await state.clear()
+    
+    if message.text.isdigit():
+        user_id = int(message.text)
+        session_maker = new_session_maker(config.postgres)
+
+        gifts_unlisting = 0
+        gifts_listing = 0
+        referrals_count = 0
+        referral_link = "..."
+
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            user = await user_gateway.get_by_id(user_id)
+            referrals_count = await user_gateway.get_count_referrals(user_id)
+            referral_link = build_direct_link(config.bot.BOT_ID.replace("@", ""), encode_payload(str(user_id)))
+
+            market_gateway = MarketGateway(session=session)
+            gifts_count = await market_gateway.get_count_gifts()
+            gifts_unlisting = gifts_count[1]
+            gifts_listing = gifts_count[2]
+            
+
+        if not user:
+            await message.answer(
+                "❌ Пользователь не найден",
+                reply_markup=admin_back()
+            )
+        else:
+            await message.answer(
+                f"<b>ID: {user.id}</b>\n" +
+                f"<b>Ник: {user.first_name}</b>\n" +
+                f"<b>Юзернейм: @{user.username}</b>\n" +
+                f"<b>Роль: {user.role}</b>\n\n" +
+                f"<b>Баланс: {user.balance} TON</b>\n" +
+                f"<b>Внесено всего: 0 TON</b>\n\n" +
+                f"<b>Подарки (не на продаже): {gifts_unlisting}</b>\n" +
+                f"<b>Подарки (на продаже): {gifts_listing}</b>\n\n" +
+                f"<b>Рефералы: {referrals_count}</b>\n" +
+                f"<b>Реферальная ссылка: {referral_link}</b>\n\n" +
+                f"<b>Кошелек: {user.wallet_address}</b>\n" +
+                f"<b>Дата регистрации: {user.created_at}</b>\n\n",
+                reply_markup=admin_user_kb(
+                    user_id=user.id,
+                    role=user.role,
+                    freezed=user.is_freezed,
+                    banned=user.is_banned
+                ),
+                link_preview_options=LinkPreviewOptions(
+                    is_disabled=True,
+                )
+            )
+            await state.clear()
+
+
+@router.callback_query(F.data.startswith("admin_user|"))
+async def edit_balance_callback(callback: CallbackQuery, config: Config, state: FSMContext):
+    if callback.from_user.id not in config.bot.moderators_chat_id:
+        return await callback.answer("⛔ Нет доступа", show_alert=True)
+    
+    data = callback.data.split("|")[1]
+    dataAction = data.split(":")[0]
+
+    if dataAction == "gift":
+        action = data.split(":")[1]
+
+        if action == "add":
+            user_id = int(callback.data.split(":")[2])
+            await callback.message.answer(
+                "<b>🎁 Добавить подарок</b>\n\nВведите ссылку с Tonnel Marketplace:"
+            )
+            await state.set_state(StatesAdminSearchUserActions.add_gift)
+            await state.update_data(user_id=user_id)
+
+    if dataAction == "balance":
+        action = data.split(":")[1]
+
+        if action == "edit":
+            user_id = int(callback.data.split(":")[2])
+            await callback.message.answer(
+                "<b>💳 Изменить баланс</b>\n\nВведите новый баланс (только с -/+):"
+            )
+            await state.set_state(StatesAdminSearchUserActions.edit_balance)
+            await state.update_data(user_id=user_id)
+
+    if dataAction == "withdraw":
+        user_id = int(callback.data.split(":")[1])
+        await callback.message.answer(
+            "<b>🪪 Настройки вывода</b>\n\n Выберите опцию для изменения:",
+            reply_markup=admin_user_withdraw_kb(user_id=user_id)
+        )
+    
+    if dataAction == "set_role":
+        user_id = int(callback.data.split(":")[1])
+        session_maker = new_session_maker(config.postgres)
+        
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            user = await user_gateway.get_by_id(user_id)
+            if user.role == "worker":
+                user = await user_gateway.update_query(user_id=user_id, role="user")
+            else:
+                user = await user_gateway.update_query(user_id=user_id, role="worker")
+
+        referrals_count = await user_gateway.get_count_referrals(user_id)
+        referral_link = build_direct_link(config.bot.BOT_ID.replace("@", ""), encode_payload(str(user_id)))
+
+        market_gateway = MarketGateway(session=session)
+        gifts_count = await market_gateway.get_count_gifts()
+        gifts_unlisting = gifts_count[1]
+        gifts_listing = gifts_count[2]
+
+        await callback.message.edit_text(
+            f"<b>ID: {user.id}</b>\n" +
+            f"<b>Ник: {user.first_name}</b>\n" +
+            f"<b>Юзернейм: @{user.username}</b>\n" +
+            f"<b>Роль: {user.role}</b>\n\n" +
+            f"<b>Баланс: {user.balance} TON</b>\n" +
+            f"<b>Внесено всего: 0 TON</b>\n\n" +
+            f"<b>Подарки (не на продаже): {gifts_unlisting}</b>\n" +
+            f"<b>Подарки (на продаже): {gifts_listing}</b>\n\n" +
+            f"<b>Рефералы: {referrals_count}</b>\n" +
+            f"<b>Реферальная ссылка: {referral_link}</b>\n\n" +
+            f"<b>Кошелек: {user.wallet_address}</b>\n" +
+            f"<b>Дата регистрации: {user.created_at}</b>\n\n",
+            reply_markup=admin_user_kb(
+                user_id=user.id,
+                role=user.role,
+                freezed=user.is_freezed,
+                banned=user.is_banned
+            ),
+            link_preview_options=LinkPreviewOptions(
+                is_disabled=True,
+            )
+        ) 
+    
+    if dataAction == "freeze":
+        user_id = int(callback.data.split(":")[1])
+        session_maker = new_session_maker(config.postgres)
+        
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            user = await user_gateway.get_by_id(user_id)
+            if user.is_freezed:
+                user = await user_gateway.update_query(user_id=user_id, is_freezed=False)
+            else:
+                user = await user_gateway.update_query(user_id=user_id, is_freezed=True)
+
+        await callback.message.edit_reply_markup(
+            reply_markup=admin_user_kb(
+                user_id=user.id,
+                role=user.role,
+                freezed=user.is_freezed,
+                banned=user.is_banned
+            ),
+        )
+    
+    if dataAction == "ban":
+        user_id = int(callback.data.split(":")[1])
+        session_maker = new_session_maker(config.postgres)
+        
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            user = await user_gateway.get_by_id(user_id)
+            if user.is_banned:
+                user = await user_gateway.update_query(user_id=user_id, is_banned=False)
+            else:
+                user = await user_gateway.update_query(user_id=user_id, is_banned=True)
+
+        await callback.message.edit_reply_markup(
+            reply_markup=admin_user_kb(
+                user_id=user.id,
+                role=user.role,
+                freezed=user.is_freezed,
+                banned=user.is_banned
+            ),
+        )
+
+
+@router.callback_query(F.data.startswith("admin_user_withdraw|"))
+async def show_withdraw_gift_settings(callback: CallbackQuery, config: Config):
+    if callback.from_user.id not in config.bot.moderators_chat_id:
+        return await callback.answer("⛔ Нет доступа", show_alert=True)
+    
+    data = callback.data.split("|")[1]
+    dataAction = data.split(":")[0]
+    user_id = int(data.split(":")[1])
+
+    session_maker = new_session_maker(config.postgres)
+    async with session_maker() as session:
+        user_gateway = UserGateway(session=session)
+        user_settings = await user_gateway.get_settings(user_id)
+
+    if dataAction == "gift":
+        newType = "Не настроено"
+        newText = "Не настроено"
+
+        if user_settings.withdraw_gift_type == "withdraw_error":
+            newType = "Ошибка вывода 🚫"
+            newText = user.settings.withdraw_gift_text
+        elif user_settings.withdraw_gift_type == "withdraw_success":
+            newType = "Вывод успешен ✅"
+            newText = user.settings.withdraw_gift_text
+        
+        await callback.message.edit_text(
+            f"<b>🎁 Вывод подарка</b>\n\n"
+            f"<b>Тип:</b> {newType}\n"
+            f"<b>Текст:</b> {newText}\n\n"
+            f"<i>Вы можете изменить тип и текст по кнопкам ниже</i>",
+            reply_markup=admin_user_settings_withdraw_gift_kb(user_id=user_id)
+        )
+
+    elif dataAction == "money":
+        newType = "Не настроено"
+        newText = "Не настроено"
+
+        if user_settings.withdraw_money_type == "withdraw_error":
+            newType = "Ошибка вывода 🚫"
+            newText = user_settings.withdraw_money_text
+        elif user_settings.withdraw_money_type == "withdraw_success":
+            newType = "Вывод успешен ✅"
+            newText = user_settings.withdraw_money_text
+        
+        await callback.message.edit_text(
+            f"<b>💰 Вывод средств</b>\n\n"
+            f"<b>Тип:</b> {newType}\n"
+            f"<b>Текст:</b> {newText}\n\n"
+            f"<i>Вы можете изменить тип и текст по кнопкам ниже</i>",
+            reply_markup=admin_user_settings_withdraw_money_kb(user_id=user_id)
+        )
+
+
+@router.callback_query(F.data.startswith("admin_user_withdraw_settings_type|"))
+async def ask_change_type(callback: CallbackQuery, config: Config):
+    if callback.from_user.id not in config.bot.moderators_chat_id:
+        return await callback.answer("⛔ Нет доступа", show_alert=True)
+    
+    data = callback.data.split("|")[1]
+    dataAction = data.split(":")[0]
+    user_id = int(data.split(":")[2])
+
+    if dataAction == "gift":
+        await callback.message.edit_text(
+            "<b>♻️ Изменить тип вывода подарка</b>\n\nВыберите новый тип:",
+            reply_markup=admin_user_settings_withdraw_gift_change_type_kb(user_id=user_id)
+        )
+    
+    if dataAction == "money":
+        await callback.message.edit_text(
+            "<b>♻️ Изменить тип вывода средств</b>\n\nВыберите новый тип:",
+            reply_markup=admin_user_settings_withdraw_money_change_type_kb(user_id=user_id)
+        )
+
+@router.callback_query(F.data.startswith("admin_user_withdraw_settings_type_edit|"))
+async def change_type(callback: CallbackQuery, config: Config):
+    if callback.from_user.id not in config.bot.moderators_chat_id:
+        return await callback.answer("⛔ Нет доступа", show_alert=True)
+
+    data = callback.data.split("|")[1]
+    dataAction = data.split(":")[0]
+    action = data.split(":")[1]
+    user_id = int(data.split(":")[2])
+
+    if dataAction == "gift":
+        if action == "error":
+            changedType = "Ошибка вывода 🚫"
+            await callback.answer("✅ Тип изменён")
+        elif action == "success":
+            changedType = "Вывод успешен ✅"
+            await callback.answer("✅ Тип изменён")
+        else:
+            return await callback.answer("⚠️ Неизвестный тип", show_alert=True)
+
+        if changedType == "Вывод успешен ✅":
+            newType = "withdraw_success"
+        elif changedType == "Ошибка вывода 🚫":
+            newType = "withdraw_error"
+
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            settings = await user_gateway.get_settings(user_id)
+            await user_gateway.update_settings(user_id, settings=UserSettingsDM(
+                withdraw_gift_type=newType,
+                withdraw_gift_text=settings.withdraw_gift_text,
+                withdraw_money_type=settings.withdraw_money_type,
+                withdraw_money_text=settings.withdraw_money_text
+            ))
+        
+        await callback.message.edit_text(
+            f"<b>✅ Тип изменён</b>\n\nТип вывода подарков: {changedType}"
+        )
+
+    if dataAction == "money":
+        if action == "error":
+            changedType = "Ошибка вывода 🚫"
+            await callback.answer("✅ Тип изменён")
+        elif action == "success":
+            changedType = "Вывод успешен ✅"
+            await callback.answer("✅ Тип изменён")
+        else:
+            return await callback.answer("⚠️ Неизвестный тип", show_alert=True)
+
+        if changedType == "Вывод успешен ✅":
+            newType = "withdraw_success"
+        elif changedType == "Ошибка вывода 🚫":
+            newType = "withdraw_error"
+
+        session_maker = new_session_maker(config.postgres)
+        async with session_maker() as session:
+            user_gateway = UserGateway(session=session)
+            settings = await user_gateway.get_settings(user_id)
+            await user_gateway.update_settings(user_id, settings=UserSettingsDM(
+                withdraw_gift_type=newType,
+                withdraw_gift_text=settings.withdraw_gift_text,
+                withdraw_money_type=settings.withdraw_money_type,
+                withdraw_money_text=settings.withdraw_money_text
+            ))
+        
+        await callback.message.edit_text(
+            f"<b>✅ Тип изменён</b>\n\nТип вывода средств: {changedType}"
+        )
+        
+
+
+@router.message(StatesAdminSearchUserActions.add_gift)
+async def receive_new_text(message: Message, state: FSMContext, config: Config):
+    try:
+        if message.from_user.id not in config.bot.moderators_chat_id:
+            return await message.answer("⛔ Нет доступа")
+
+        if (not message.text.startswith("http")):
+            await message.answer(
+                "❌ Неверный формат команды\n\nВведите ссылку с Tonnel Marketplace:",
+                reply_markup=admin_back()
+            )
+            return
+
+        stateData = await state.get_data()
+
+        id = message.text.split("=")[1]
+        user_id = stateData["user_id"]
+
+        def extract_name(text: str) -> str:
+            if not text:
+                return ""
+            match = re.match(r'^(.*?)\s*\(\d+(?:\.\d+)?%?\)', text)
+            return match.group(1) if match else text
+
+        def extract_percents(text: str) -> str:
+            if not text:
+                return None
+            match = re.search(r'\((\d+(?:\.\d+)?)%\)', text)
+            return float(match.group(1)) if match else None
+
+        nfts_interactor = NftsInteractor()
+        gift = await nfts_interactor.get_tonnel_info(id)
+
+        pattern_name = extract_name(gift['symbol'])
+        model_name = extract_name(gift['model'])
+        backdrop_name = extract_name(gift['backdrop'])
+
+        pattern_percent = extract_percents(gift['symbol'])
+        model_percent = extract_percents(gift['model'])
+        backdrop_percent = extract_percents(gift['backdrop'])
+
+        order_data = CreateOrderDM(
+            gift_id=message.message_id,
+            seller_id=user_id,
+            number=gift['num'] if gift['num'] else 0,
+            type=gift['name'],
+            pattern=pattern_percent,
+            model=model_percent,
+            background=backdrop_percent,
+            pattern_name=pattern_name,
+            model_name=model_name,
+            background_name=backdrop_name,
+            rarity=calculate_gift_rarity(model_percent),
+            price=float(gift['price']),
+            is_active=True,
+        )
+        await create_order(order_data, config.postgres)
+                
+        await message.answer(
+            "<b>✅ Подарок успешно добавлен</b>\n\n" \
+            f"<b>{gift['name']} #{gift['num']}\n\n</b>" \
+            f"{gift['model']}\n" \
+            f"{gift['backdrop']}\n" \
+            f"{gift['symbol']}\n\n" \
+            f"{gift['price']} TON",
+            reply_markup=admin_back()
+        )
+        await state.clear()
+    except:
+        await message.answer(
+            "<b>❌ Подарок не добавлен</b>\n\n" \
+            "Попробуйте еще раз",
+            reply_markup=admin_back()
+        )
+
+
+@router.message(StatesAdminSearchUserActions.edit_balance)
+async def receive_new_text(message: Message, state: FSMContext, config: Config):
+    if message.from_user.id not in config.bot.moderators_chat_id:
+        return await message.answer("⛔ Нет доступа")
+
+    if (not message.text.startswith("+") and not message.text.startswith("-")) or message.text.startswith("0"):
+        await message.answer(
+            "❌ Неверный формат команды\n\nВведите новый баланс (только с -/+):",
+            reply_markup=admin_back()
+        )
+        return
+
+    stateData = await state.get_data()
+    user_id = stateData["user_id"]
+
+    session_maker = new_session_maker(config.postgres)
+    async with session_maker() as session:
+        user_gateway = UserGateway(session=session)
+        if message.text.startswith("+"):
+            await user_gateway.update_balance(
+                UpdateUserBalanceDM(id=int(user_id), amount=float(message.text[1:]))
+            )
+        elif message.text.startswith("-"):
+            await user_gateway.update_balance(
+                UpdateUserBalanceDM(id=int(user_id), amount=-float(message.text[1:]))
+            )
+        
+        await session.commit()
+            
+    await message.answer(
+        "<b>✅ Баланс успешно изменен</b>",
+        reply_markup=admin_back()
+    )
+    await state.clear()
 
 @router.message(StatesAdminSearchGift.gift_id)
 async def receive_new_text(message: Message, state: FSMContext, config: Config):

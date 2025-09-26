@@ -23,12 +23,98 @@ def admin_kb(admin_url: str) -> InlineKeyboardMarkup:
         InlineKeyboardButton(text="Веб-панель", web_app=WebAppInfo(url=admin_url)),
     )
     keyboard.row(
+        InlineKeyboardButton(text="🔎 Поиск юзера", callback_data="admin:search_user"),
+    )
+    keyboard.row(
         InlineKeyboardButton(text="🎁 Поиск подарка", callback_data="admin:search_gift"),
     )
     keyboard.row(
         InlineKeyboardButton(text="⚙️ Настройки", callback_data="admin:settings"),
     )
     return keyboard.as_markup()
+
+def admin_user_kb(user_id: int, role: str = 'worker', freezed: bool = False, banned: bool = False) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        InlineKeyboardButton(text="🎁 Добавить подарок", callback_data="admin_user|gift:add:" + str(user_id)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="💳 Изменить баланс", callback_data="admin_user|balance:edit:" + str(user_id)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="🪪 Настройки вывода", callback_data="admin_user|withdraw:" + str(user_id)),
+    )
+    if role == "worker":
+        keyboard.row(
+            InlineKeyboardButton(text='Снять роль "Воркер"', callback_data="admin_user|set_role:" + str(user_id)),
+        )
+    else:
+        keyboard.row(
+            InlineKeyboardButton(text='Изменить роль на "Воркер"', callback_data="admin_user|set_role:" + str(user_id)),
+        )
+    keyboard.row(
+        InlineKeyboardButton(
+            text='✳️ Разморозить' if freezed else '❄️ Заморозить',
+            callback_data=f"admin_user|freeze:{user_id}"
+        ),
+        InlineKeyboardButton(
+            text='📛 Разблокировать' if banned else '💢 Заблокировать',
+            callback_data=f"admin_user|ban:{user_id}"
+        )
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="♻️ Депозиты", callback_data="admin_user|history:deposits:" + str(user_id)),
+        InlineKeyboardButton(text="♻️ Выводы", callback_data="admin_user|history:deposits:" + str(user_id)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back"),
+    )
+    return keyboard.as_markup()
+
+
+def admin_user_withdraw_kb(user_id: int) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.row(
+        InlineKeyboardButton(text="🎁 Вывод подарка", callback_data="admin_user_withdraw|gift:" + str(user_id)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="💰 Вывод средств", callback_data="admin_user_withdraw|money:" + str(user_id)),
+    )
+    keyboard.row(
+        InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back"),
+    )
+    return keyboard.as_markup()
+
+def admin_user_settings_withdraw_gift_kb(user_id: int):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="♻️ Изменить тип", callback_data="admin_user_withdraw_settings_type|gift:change_type:" + str(user_id))],
+        [InlineKeyboardButton(text="✍️ Изменить текст", callback_data="admin_user_withdraw_settings_type|gift:change_text:" + str(user_id))],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back")]
+    ])
+
+def admin_user_settings_withdraw_money_kb(user_id: int):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="♻️ Изменить тип", callback_data="admin_user_withdraw_settings_type|money:change_type:" + str(user_id))],
+        [InlineKeyboardButton(text="✍️ Изменить текст", callback_data="admin_user_withdraw_settings_type|money:change_text:" + str(user_id))],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back")]
+    ])
+
+def admin_user_settings_withdraw_gift_change_type_kb(user_id: int):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🚫 Ошибка вывода", callback_data="admin_user_withdraw_settings_type_edit|gift:error:" + str(user_id))],
+        [InlineKeyboardButton(text="✅ Вывод успешен", callback_data="admin_user_withdraw_settings_type_edit|gift:success:" + str(user_id))],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back")]
+    ])
+
+def admin_user_settings_withdraw_money_change_type_kb(user_id: int):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🚫 Ошибка вывода", callback_data="admin_user_withdraw_settings_type_edit|money:error:" + str(user_id))],
+        [InlineKeyboardButton(text="✅ Вывод успешен", callback_data="admin_user_withdraw_settings_type_edit|money:success:" + str(user_id))],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="admin_settings:back")]
+    ])
+
+
+
 
 def admin_gift_kb(gift_id: int) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()

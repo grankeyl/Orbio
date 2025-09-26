@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.application.interfaces.user import UserReader, UserSaver
-from src.domain.entities.user import CreateUserDM, UpdateUserBalanceDM, UserDM
+from src.domain.entities.user import CreateUserDM, UpdateUserBalanceDM, UserDM, UserSettingsDM
 from src.infrastructure.models.user import User, UserReferral
 
 
@@ -13,6 +13,52 @@ class UserGateway(UserReader, UserSaver):
 
     async def get_by_id(self, user_id: int) -> UserDM | None:
         stmt = select(User).filter_by(id=user_id)
+        result = await self._session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if user:
+            return UserDM(**user.__dict__)
+
+    async def get_settings(self, user_id: int) -> UserSettingsDM:
+        stmt = select(User).filter_by(id=user_id)
+        result = await self._session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if user and user.settings:
+            return UserSettingsDM(**user.settings)
+        return UserSettingsDM()  # ✅ дефолт
+
+
+    async def update_settings(self, user_id: int, settings: UserSettingsDM) -> UserSettingsDM | None:
+        stmt = (
+            update(User)
+            .where(User.id == user_id)
+            .values(settings=settings.model_dump())  # ✅ dict -> JSON
+            .returning(User)
+        )
+        result = await self._session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if user and user.settings:
+            return UserSettingsDM(**user.settings)  # ✅ dict -> модель
+        return None
+    
+    async def update_query(self, user_id: int, **query) -> UserDM | None:
+        stmt = select(User).filter_by(id=user_id)
+        result = await self._session.execute(stmt)
+        user = result.scalar_one_or_none()
+
+        if not user:
+            return None
+
+        for key, value in query.items():
+            if hasattr(user, key):
+                setattr(user, key, value)
+
+        await self._session.commit()
+        await self._session.refresh(user)
+
+        return UserDM(**user.__dict__)
+    
+    async def get_by_username(self, username: str) -> UserDM | None:
+        stmt = select(User).filter_by(username=username)
         result = await self._session.execute(stmt)
         user = result.scalar_one_or_none()
         if user:

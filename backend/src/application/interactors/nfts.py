@@ -1,7 +1,10 @@
+import json
 import httpx
 from typing import Any
 from src.application.interfaces.interactor import Interactor
+from src.entrypoint.config import Config
 
+config = Config()
 
 async def get_nft_info(type: str) -> Any:
     timeout = httpx.Timeout(15.0)
@@ -52,7 +55,7 @@ class NftsInteractor:
             "Accept": "application/json, text/plain, */*",
             "Accept-Encoding": "identity",
             "Accept-Language": "ru",
-            "Authorization": "tma user=%7B%22id%22%3A2106187940%2C%22first_name%22%3A%22Grankeyl%22%2C%22last_name%22%3A%22%22%2C%22username%22%3A%22oaole%22%2C%22language_code%22%3A%22ru%22%2C%22is_premium%22%3Atrue%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FRxorCh8pIvxePpBZObmQqHhfbZ1-0XS1r-4kQ1-e_kA.svg%22%7D&chat_instance=5742971387824700247&chat_type=private&auth_date=1750681080&signature=YvGQr_Rw4HjsHcmvKyGFs0e_C9eXsnkC7j2Hiygm1AnMclhzNHgEfxbXWlAWgaMB-mgfp58XNHaGjwPU7MaCBA&hash=0fdd10aabe4982fd73bfe5b345f31303b35218362d7256282d4cbf176d1f0f67",
+            "Authorization": f"tma {config.sites.PORTAL_AUTHORIZATION}",
             "Cache-Control": "no-cache",
             "Pragma": "no-cache",
             "Referer": "https://portals-market.com/",
@@ -65,3 +68,40 @@ class NftsInteractor:
             floors = response.json()
 
         return floors
+    
+    async def get_tonnel_info(self, id: str) -> Any:
+        print(f"Getting tonnel info for id: {id}")
+        url = f"https://gifts3.tonnel.network/api/giftData/{id}"
+        timeout = httpx.Timeout(15.0)
+        headers = {
+            "Accept": "*/*",
+            "Accept-Language": "ru",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Content-Type": "application/json",
+            "Origin": "https://marketplace.tonnel.network",
+            "Pragma": "no-cache",
+            "Referer": "https://marketplace.tonnel.network/",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-site",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko)"
+        }
+
+        data = {
+            "ref": "",
+            "authData": f"{config.sites.TONNEL_AUTHORIZATION}"
+        }
+
+        async with httpx.AsyncClient(timeout=timeout, headers=headers) as client:
+            response = await client.post(url, json=data)
+            response.raise_for_status()
+            if not response.text.strip():
+                print("❌ Пустой ответ от сервера")
+                return {"error": "Empty response from server"}
+            try:
+                return response.json()
+            except json.JSONDecodeError as e:
+                print("❌ Не удалось распарсить JSON:", e)
+                print("Ответ сервера:", response.text)
+                return {"error": "Invalid JSON response"}

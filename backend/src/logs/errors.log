@@ -7628,3 +7628,949 @@ WHERE users.id = $1::BIGINT]
 
 
 
+2025-08-01 01:48:54,237 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 301, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/base.py", line 192, in auto_injected_func
+    return await func(*args, **kwargs, **solved)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/user/router.py", line 27, in user_login
+    token = await interactor(data=dto)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/src/application/interactors/user.py", line 77, in __call__
+    user = await self._user_gateway.get_by_id(user_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/src/infrastructure/gateways/user.py", line 16, in get_by_id
+    result = await self._session.execute(stmt)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 461, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 201, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2362, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2247, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 305, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1418, in execute
+    return meth(
+           ^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 515, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1640, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2355, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 941, in do_execute
+    cursor.execute(statement, parameters)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 568, in execute
+    self._adapt_connection.await_(
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 164, in await_fallback
+    return current.parent.switch(awaitable)  # type: ignore[no-any-return,attr-defined] # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 196, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 497, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 780, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.InFailedSQLTransactionError'>: current transaction is aborted, commands ignored until end of transaction block
+[SQL: SELECT users.id, users.photo_url, users.username, users.first_name, users.deposit_comment, users.balance, users.commission, users.is_banned, users.custom_referral_percent, users.language_code, users.created_at 
+FROM users 
+WHERE users.id = $1::BIGINT]
+[parameters: (5000401812,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+
+
+
+
+2025-08-01 01:51:17,744 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-01 01:54:52,788 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-03 16:28:35,086 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 17:57:44,951 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:11:30,974 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:48:35,458 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:49:36,797 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:51:44,587 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:55:15,697 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:55:22,423 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 19:57:32,913 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-04 20:00:24,633 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-05 18:11:42,363 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-06 15:38:33,056 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-06 15:48:34,990 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-07 18:34:41,790 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+
+2025-08-21 20:09:07,567 - ERROR - Traceback (most recent call last):
+  File "/Users/grankeyl/Desktop/orbio/backend/src/presentation/api/middlewares.py", line 35, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 163, in call_next
+    raise app_exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 149, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/dishka/integrations/starlette.py", line 63, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 715, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 735, in app
+    await route.handle(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 288, in handle
+    await self.app(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 76, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/starlette/routing.py", line 73, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 327, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/grankeyl/Desktop/orbio/backend/venv/lib/python3.12/site-packages/fastapi/routing.py", line 176, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'model_attributes_type', 'loc': ('response', 0), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+  {'type': 'model_attributes_type', 'loc': ('response', 1), 'msg': 'Input should be a valid dictionary or object to extract fields from', 'input': None}
+
+
+
+
+

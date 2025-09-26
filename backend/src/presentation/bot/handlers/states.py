@@ -1,5 +1,12 @@
 from aiogram.fsm.state import StatesGroup, State
 
+class StatesAdminSearchUser(StatesGroup):
+    user = State()
+
+class StatesAdminSearchUserActions(StatesGroup):
+    add_gift = State()
+    edit_balance = State()
+
 class StatesAdminSearchGift(StatesGroup):
     gift_id = State()
 

@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Boolean, Float, ForeignKey, String, Integer
+from sqlalchemy import BigInteger, Boolean, Float, ForeignKey, String, Integer, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.infrastructure.models.base import Base
@@ -12,10 +12,13 @@ class User(Base):
     deposit_comment: Mapped[str] = mapped_column(String, unique=True)
     balance: Mapped[float] = mapped_column(Float, default=0)
     commission: Mapped[float] = mapped_column(Float, default=0)
-    is_banned: Mapped[bool] = mapped_column(Boolean, default=False)
     custom_referral_percent: Mapped[int | None] = mapped_column(Integer, nullable=True)
     language_code: Mapped[str | None] = mapped_column(String, nullable=True)
-
+    wallet_address: Mapped[str | None] = mapped_column(String, unique=True, nullable=True)
+    role: Mapped[str] = mapped_column(String, default="user")
+    is_freezed: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_banned: Mapped[bool] = mapped_column(Boolean, default=False)
+    settings: Mapped[dict] = mapped_column(JSON, default={})
 
 class UserReferral(Base):
     referrer_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"))
